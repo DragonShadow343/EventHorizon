@@ -1,10 +1,9 @@
-import React from 'react'
 import { Link } from "react-router-dom"
 
 const HomeNavBar = ({className}) => {
   return (
     <>
-        <nav className='flex shadow-xl h-20 w-3/5 mx-auto my-15 px-10 items-center justify-between rounded-full'>
+        <nav className={`flex shadow-xl h-20 w-3/5 mx-auto my-15 px-10 items-center justify-between rounded-full ${className}`}>
 
             <Link to="/">
               <h1 className='text-2xl'>EventHorizon</h1>
