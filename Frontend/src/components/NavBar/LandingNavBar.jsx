@@ -1,28 +1,29 @@
-import { Link } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
 const HomeNavBar = ({className}) => {
+
   return (
     <>
         <nav className={`flex shadow-xl h-20 w-3/5 mx-auto my-15 px-10 items-center justify-between rounded-full ${className}`}>
 
-            <Link to="/">
+            <NavLink to="/">
               <h1 className='text-2xl'>EventHorizon</h1>
-            </Link>
+            </NavLink>
             <ul className='flex gap-x-5'>
-                <li className='cursor-pointer'>
-                  <Link to="/events">
+                <li>
+                  <NavLink to="/events">
                     Events
-                  </Link>
+                  </NavLink>
                 </li>
-                <li className='cursor-pointer'>
-                  <Link to="/signup">
+                <li>
+                  <NavLink to="/signup">
                     Sign Up
-                  </Link>
+                  </NavLink>
                 </li>
-                <li className='cursor-pointer'>
-                  <Link to="/login">
+                <li>
+                  <NavLink to="/login">
                     Login
-                  </Link>
+                  </NavLink>
                 </li>
             </ul>
         </nav>

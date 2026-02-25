@@ -1,10 +1,10 @@
 import React from 'react'
-import HomeNavBar from './../components/HomeNavBar'
+import LandingNavBar from './../components/NavBar/LandingNavBar'
 
 const Home = () => {
   return (
     <>
-        <HomeNavBar className={""}/>
+        <LandingNavBar className={""}/>
     </>
   )
 }
