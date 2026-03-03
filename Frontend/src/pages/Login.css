@@ -46,11 +46,6 @@
   font-size: 1.2rem;
 }
 
-.error {
-  color: red;
-  margin-bottom: 1rem;
-}
-
 form {
   width: 50%;
   margin: 0 auto;
@@ -59,4 +54,11 @@ form {
 .signup-link {
   text-align: center;
   margin-top: 7.5rem;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
 }
