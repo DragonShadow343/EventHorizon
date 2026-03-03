@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/NavBar/Navbar';
-import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -60,39 +59,48 @@ const validatePassword = (password) => {
   return (
     <>
       <Navbar />
-      <div className="login-container">
-        <div className="login-left"></div>
 
-        <div className="login-right">
-          <Link to="/" className="back-arrow">← Back</Link>
+      {/* .login-container */}
+      <div className="flex h-screen">
+        {/* .login-left */}
+        <div className="flex-1 bg-gray-300"></div>
 
-          <h1>Login to Your Account</h1>
+        {/* .login-right */}
+        <div className="flex flex-1 flex-col p-12">
 
-          <form onSubmit={handleSubmit}>
+          <Link to="/" className="mb-4 text-[1.2rem] no-underline">← Back</Link>
+
+          <h1 className="mt-20 mb-20 text-center text-[1.7em]">Login to Your Account</h1>
+
+          <form onSubmit={handleSubmit} className="mx-auto flex w-1/2 flex-col gap-4">
             <input
+              className="p-3 text-base" 
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             {errors.email && (
-              <p className="error-message">{errors.email}</p>
+              <p className="-mt-2 mb-2 text-[0.9em] text-red-600">{errors.email}</p>
             )}
 
             <input
+              className="p-3 text-base"
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             {errors.password && (
-              <p className="error-message">{errors.password}</p>
+              <p className="-mt-2 mb-2 text-[0.9em] text-red-600">{errors.password}</p>
             )}
 
-            <button type="submit">Login</button>
+            <button type="submit" className="bg-blue-500 text-white p-3 rounded">
+              Login
+            </button>
           </form>
 
-          <p className="signup-link">
+          <p className="mt-4 text-center text-[0.9em]">
             Don't have an account? <Link to="/signup">Sign up here</Link>
           </p>
         </div>
