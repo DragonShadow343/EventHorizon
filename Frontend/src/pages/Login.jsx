@@ -1,66 +1,104 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/NavBar/Navbar'
+import Navbar from '../components/NavBar/Navbar';
 import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({}); 
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
+    return regex.test(email);
+  };
+
+const validatePassword = (password) => {
+  return {
+    hasUpperCase: /[A-Z]/.test(password),
+    hasNumber: /\d/.test(password),
+    hasSymbol: /[!@#$%^&*]/.test(password),
+    hasMinLength: password.length >= 8,
+  };
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Please fill in all fields');
+
+    const passwordCheck = validatePassword(password);
+
+    const newErrors = {};
+
+    if (!email) {
+      newErrors.email = "Please enter your email address";
+    } else if (!validateEmail(email)) {
+      newErrors.email = "Please enter a valid email address";
     } else {
-      // Handle login logic here
-      console.log('Logging in with:', { email, password });
-      setError('');
+      newErrors.email = "";
     }
+
+    if (!password) {
+      newErrors.password = "Please enter your password";
+    } else if (!passwordCheck.hasUpperCase) {
+      newErrors.password =
+        "Password must include 1 uppercase letter.";
+    } else if (!passwordCheck.hasNumber) {
+      newErrors.password =
+        "Password must include 1 number.";
+    } else if (!passwordCheck.hasSymbol) {
+      newErrors.password =
+        "Password must include 1 symbol.";
+    } else if (!passwordCheck.hasMinLength) {
+      newErrors.password = "Password must be at least 8 characters long.";
+    } else {
+      newErrors.password = "";
+    }
+ 
+    setErrors(newErrors);
   };
 
   return (
     <>
       <Navbar />
       <div className="login-container">
-        {/* LEFT SIDE */}
-        <div className="login-left">
-          {/* Placeholder for image or design */}
-          </div>
+        <div className="login-left"></div>
 
-          {/* RIGHT SIDE */}
-          <div className="login-right">
-            <Link to="/" className="back-arrow">← Back</Link>
+        <div className="login-right">
+          <Link to="/" className="back-arrow">← Back</Link>
 
-            <h1>Login to Your Account</h1>
+          <h1>Login to Your Account</h1>
 
-            {error && <p className="error">{error}</p>} 
+          <form onSubmit={handleSubmit}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {errors.email && (
+              <p className="error-message">{errors.email}</p>
+            )}
 
-            <form onSubmit={handleSubmit}>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button type="submit">Login</button>
-            </form>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {errors.password && (
+              <p className="error-message">{errors.password}</p>
+            )}
 
-            <p className="signup-link">
-              Don't have an account?{" "} 
-              <Link to="/signup">Sign up here</Link>
-            </p>
-          </div>
+            <button type="submit">Login</button>
+          </form>
+
+          <p className="signup-link">
+            Don't have an account? <Link to="/signup">Sign up here</Link>
+          </p>
+        </div>
       </div>
     </>
   );
 };
 
-export default Login
+export default Login;
