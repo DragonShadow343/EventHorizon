@@ -33,8 +33,6 @@ const validatePassword = (password) => {
       newErrors.email = "Please enter your email address";
     } else if (!validateEmail(email)) {
       newErrors.email = "Please enter a valid email address";
-    } else {
-      newErrors.email = "";
     }
 
     if (!password) {
@@ -50,11 +48,13 @@ const validatePassword = (password) => {
         "Password must include 1 symbol.";
     } else if (!passwordCheck.hasMinLength) {
       newErrors.password = "Password must be at least 8 characters long.";
-    } else {
-      newErrors.password = "";
-    }
+    } 
  
     setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) { 
+        return;
+    }
   };
 
   return (
