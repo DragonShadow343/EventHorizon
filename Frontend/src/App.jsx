@@ -17,31 +17,41 @@ import UserSettings from './pages/user/UserSettings'
 import Events from './pages/events/Events'
 import CreateEventsPage from './pages/events/CreateEventsPage'
 import EventDetails from './pages/events/EventDetails'
+import { FakeAuthContextProvider } from './context/FakeAuthContext';
+import {AdminRoute, PrivateRoute} from './components/ProtectedRoute';
 
 function App() {
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
-        {/* Admin Pages */}
-        <Route path='/admin/dashboard' element={<AdminDashboard />} />
-        <Route path='/admin/reports' element={<AdminReports />} />
-        <Route path='/admin/reportdetails' element={<AdminReportDetails />} />
-        <Route path='/admin/user' element={<AdminActiveUsers />} />
-        <Route path='/admin/userdetails' element={<AdminUserDetails />} />
-        <Route path='/admin/settings' element={<AdminSettings />} />
-        {/* User Pages */}
-        <Route path='/user/dashboard' element={<UserDashboard />} />
-        <Route path='/user/settings' element={<UserSettings />} />
-        {/* Event Pages */}
-        <Route path='/events' element={<Events />} />
-        <Route path='/events/create' element={<CreateEventsPage />} />
-        <Route path='/events/eventdetails' element={<EventDetails />} />
-      </Routes>
-    </BrowserRouter>
+    <FakeAuthContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/home' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/events' element={<Events />} />
+            <Route path='/events/eventdetails' element={<EventDetails />} />
+          {/* Admin Pages */}
+          <Route path='/admin/' element = {<AdminRoute />}>
+            <Route path='dashboard' element={<AdminDashboard />} />
+            <Route path='reports' element={<AdminReports />} />
+            <Route path='reportdetails' element={<AdminReportDetails />} />
+            <Route path='user' element={<AdminActiveUsers />} />
+            <Route path='userdetails' element={<AdminUserDetails />} />
+            <Route path='settings' element={<AdminSettings />} />
+          </Route>
+
+          {/* User Pages */}
+          <Route path='/user/' element={<PrivateRoute />}>
+            <Route path='dashboard' element={<UserDashboard />} />
+            <Route path='settings' element={<UserSettings />} />
+            {/* Event Pages */}
+            <Route path='events/create' element={<CreateEventsPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </FakeAuthContextProvider>
   )
 }
 
