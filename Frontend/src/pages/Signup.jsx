@@ -23,13 +23,6 @@ const Signup = () => {
       <Navbar />
       <div className="flex h-[calc(100vh-80px)]">
         {/* LEFT SIDE */}
-        <div className="flex-1 p-10">
-          <div className='w-full h-full bg-blue-400 rounded-3xl'>
-
-          </div>
-        </div>
-
-        {/* RIGHT SIDE */}
         <div className="h-full relative flex-1 flex flex-col justify-center p-12">
           <NavLink to="/" className="absolute top-10 left-10">← Back</NavLink>
 
@@ -60,7 +53,17 @@ const Signup = () => {
             <NavLink to="/login" className="text-blue-400 hover:text-blue-500 duration-150 hover:underline">Log in here</NavLink>
           </p>
         </div>
+        {/* RIGHT SIDE */}
+        <div className="flex-1 p-10">
+          <div className='w-full h-full bg-blue-400 rounded-3xl'>
+
+          </div>
+        </div>
+
       </div>
+
+
+
     </>
   )
 }
