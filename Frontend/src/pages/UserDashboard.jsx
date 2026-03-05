@@ -1,4 +1,5 @@
 import React from 'react'
+import EventCard from '../components/EventCard/EventCard'
 
 const UserDashboard = () => {
 
