@@ -1,8 +1,10 @@
-import React from 'react'
+import Navbar from '../../components/NavBar/Navbar'
 
 const EventPage = () => {
   return (
-    <div>EventDetailsPage</div>
+    <>
+      <Navbar />
+    </>
   )
 }
 
