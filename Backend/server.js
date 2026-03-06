@@ -18,5 +18,8 @@ app.use(cors({
 }));
 
 app.use("/auth", (await import("./src/routes/authRoutes.js")).default);
+app.use("/users", (await import("./src/routes/userRoutes.js")).default);
+app.use("/events", (await import("./src/routes/eventRoutes.js")).default);
+app.use("/admin", (await import("./src/routes/adminRoutes.js")).default);
 
 app.listen(4000, () => console.log("Server running on port 4000"));
