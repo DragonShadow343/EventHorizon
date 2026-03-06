@@ -1,19 +1,17 @@
-import { mockEvents } from "../../../Backend/src/mock/mockEvents";
-
-const API = "http://localhost:4000";
+const API = "http://localhost:4000/events";
 
 export async function getAllEvents() {
-    const res = await fetch(`${API}/events`);
+    const res = await fetch(`${API}`);
     return res.json();
 }
 
 export async function getEventsByID(id) {
-    const res = await fetch(`${API}/events/${id}`);
+    const res = await fetch(`${API}/${id}`);
     return res.json();
 }
 
 export async function getEventsByOrganizer(userId) {
-    const res = await fetch(`${API}/events/${id}`);
+    const res = await fetch(`${API}/${id}`);
     return res.json();
 }
 
