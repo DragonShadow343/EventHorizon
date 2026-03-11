@@ -60,7 +60,7 @@ export async function editMyEvent(req, res) {
 
 export function createEvent(req, res) {
     const newEvent = { 
-        eventId: "e" + (mockEvents.length + 1),
+        eventId: "e" + Date.now().toString(),
         title: req.body.title,
         description: req.body.description,
         date: req.body.date,
@@ -176,4 +176,61 @@ export function getTrendingEvents(req, res) {
         .slice(0, 5);
 
     res.json(trending);
+}
+
+export async function createReport(req, res) {
+    const eventId = req.params.id;
+    const userId = req.user.id;
+    const { reason, description } = req.body;
+
+    const event = mockEvents.find(e => e.id === eventId);
+
+    if (!event) {
+        return res.status(404).json({ error: "Event not found" });
+    }
+
+    const newReport = {
+        id: Date.now().toString(),
+        eventId,
+        reportedBy: userId,
+        reason,
+        description,
+        status: "open",
+        createdAt: new Date()
+    };
+
+    reports.push(newReport);
+
+    res.status(201).json(newReport);
+}
+
+export async function createReview(req, res) {
+    const eventId = req.params.id;
+    const userId = req.user.id;
+    const { rating, comment } = req.body;
+
+    const event = mockEvents.find(e => e.id === eventId);
+
+    if (!event) {
+        return res.status(404).json({ error: "Event not found" });
+    }
+
+    // Check if user RSVP'd (optional but good practice)
+    const hasRSVPd = event.rsvpUsers.includes(userId);
+
+    if (!hasRSVPd) {
+        return res.status(403).json({ error: "You must attend the event to review it" });
+    }
+
+    const newReview = {
+        id: Date.now().toString(),
+        userId,
+        rating,
+        comment,
+        createdAt: new Date()
+    };
+
+    event.reviews.push(newReview);
+
+    res.status(201).json(newReview);
 }

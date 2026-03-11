@@ -1,26 +1,70 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router';
-import Navbar from '../components/NavBar/Navbar';
+import { NavLink } from 'react-router-dom';
+import { register } from '../api/auth';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError('Please fill in all fields');
-    } else {
-      // Handle signup logic here
-      console.log('Signing up with:', { email, password });
-      setError('');
-    }
+  const [rePassword, setRepassword] = useState('');
+  const [errors, setErrors] = useState({});
+  
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
+    return regex.test(email);
   };
+  
+  const validatePassword = (password) => {
+    return {
+      hasUpperCase: /[A-Z]/.test(password),
+      hasNumber: /\d/.test(password),
+      hasSymbol: /[!@#$%^&*]/.test(password),
+      hasMinLength: password.length >= 8,
+    };
+  };
+
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      const passwordCheck = validatePassword(password);
+
+      const newErrors = {};
+
+      if (!email) {
+        newErrors.email = "Please enter your email address";
+      } else if (!validateEmail(email)) {
+        newErrors.email = "Please enter a valid email address";
+      }
+
+      if (!password) {
+        newErrors.password = "Please enter your password";
+      } else if (!passwordCheck.hasUpperCase) {
+        newErrors.password =
+          "Password must include 1 uppercase letter.";
+      } else if (!passwordCheck.hasNumber) {
+        newErrors.password =
+          "Password must include 1 number.";
+      } else if (!passwordCheck.hasSymbol) {
+        newErrors.password =
+          "Password must include 1 symbol.";
+      } else if (!passwordCheck.hasMinLength) {
+        newErrors.password = "Password must be at least 8 characters long.";
+      }
+
+      if (password !== rePassword) {
+        newErrors.rePassword = "Passwords do not match";
+      }
+    
+      setErrors(newErrors);
+
+      if (Object.keys(newErrors).length > 0) { 
+          return;
+      } else {
+        await register(email, password);
+      }
+    };
 
   return (
     <>
-      <Navbar />
       <div className="flex h-[calc(100vh-80px)]">
         {/* LEFT SIDE */}
         <div className="h-full relative flex-1 flex flex-col justify-center p-12">
@@ -28,7 +72,6 @@ const Signup = () => {
 
           <h1 className='text-3xl mb-5 text-center'>Sign Up</h1>
 
-          {error && <p className="text-red-500 mb-4">{error}</p>}
 
           <form onSubmit={handleSubmit} className='flex flex-col gap-4 w-96 mx-auto my-10'>
             <input
@@ -37,7 +80,8 @@ const Signup = () => {
               value={email}
               className='p-3 border rounded-lg'
               onChange={(e) => setEmail(e.target.value)}
-            />
+              />
+            {errors.email && <p className="text-red-500">{errors.email}</p>}
             <input
               type="password"
               placeholder="Password"
@@ -45,6 +89,16 @@ const Signup = () => {
               className='p-3 border rounded-lg'
               onChange={(e) => setPassword(e.target.value)}
             />
+            {errors.password && <p className="text-red-500">{errors.password}</p>}
+            <input
+              type="password"
+              placeholder="Re-type password"
+              value={rePassword}
+              className='p-3 border rounded-lg'
+              onChange={(e) => setRepassword(e.target.value)}
+            />
+            {errors.rePassword && <p className="text-red-500">{errors.rePassword}</p>}
+
             <button type="submit" className='p-3 mx-10 mt-10 cursor-pointer rounded-lg bg-blue-400 hover:bg-blue-500 duration-150 text-white'>Sign Up</button>
           </form>
 
@@ -56,9 +110,8 @@ const Signup = () => {
         {/* RIGHT SIDE */}
         <div className="flex-1 p-10">
           <div className='w-full h-full bg-blue-400 rounded-3xl'>
-
-          </div>
         </div>
+      </div>
 
       </div>
 

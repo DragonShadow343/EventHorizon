@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/NavBar/Navbar';
+import { NavLink } from 'react-router-dom';
+import { login } from '../api/auth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,19 +12,8 @@ const Login = () => {
     return regex.test(email);
   };
 
-const validatePassword = (password) => {
-  return {
-    hasUpperCase: /[A-Z]/.test(password),
-    hasNumber: /\d/.test(password),
-    hasSymbol: /[!@#$%^&*]/.test(password),
-    hasMinLength: password.length >= 8,
-  };
-};
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const passwordCheck = validatePassword(password);
 
     const newErrors = {};
 
@@ -36,39 +25,26 @@ const validatePassword = (password) => {
 
     if (!password) {
       newErrors.password = "Please enter your password";
-    } else if (!passwordCheck.hasUpperCase) {
-      newErrors.password =
-        "Password must include 1 uppercase letter.";
-    } else if (!passwordCheck.hasNumber) {
-      newErrors.password =
-        "Password must include 1 number.";
-    } else if (!passwordCheck.hasSymbol) {
-      newErrors.password =
-        "Password must include 1 symbol.";
-    } else if (!passwordCheck.hasMinLength) {
-      newErrors.password = "Password must be at least 8 characters long.";
-    } 
+    }
  
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) { 
         return;
+    } else {
+      await login(email, password);
     }
   };
 
   return (
     <>
-      <Navbar />
-
-      {/* .login-container */}
       <div className="flex h-screen">
-        {/* .login-left */}
-        <div className="flex-1 bg-gray-300"></div>
-
-        {/* .login-right */}
+        <div className="flex-1 p-10">
+          <div className='w-full h-full bg-blue-400 rounded-3xl'></div>
+        </div>
         <div className="flex flex-1 flex-col p-12">
 
-          <Link to="/" className="mb-4 text-[1.2rem] no-underline">← Back</Link>
+          <NavLink to="/" className="mb-4 text-[1.2rem] no-underline">← Back</NavLink>
 
           <h1 className="mt-20 mb-20 text-center text-[1.7em]">Login to Your Account</h1>
 
@@ -101,7 +77,7 @@ const validatePassword = (password) => {
           </form>
 
           <p className="mt-4 text-center text-[0.9em]">
-            Don't have an account? <Link to="/signup">Sign up here</Link>
+            Don't have an account? <NavLink to="/signup">Sign up here</NavLink>
           </p>
         </div>
       </div>

@@ -67,3 +67,23 @@ export async function editMyEvent(eventId, updatedEvent) {
     });
     return res.json();
 }
+
+export async function createReport(eventId, reportData) {
+    const res = await fetch(`${API}/report/${eventId}`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        credentials: "include",
+        body: JSON.stringify(reportData),
+    })
+    return res.json();
+}
+
+export async function createReview(eventId, reviewData) {
+    const res = await fetch(`${API}/review/${eventId}`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        credentials: "include",
+        body: JSON.stringify(reviewData),
+    })
+    return res.json();
+}
