@@ -1,4 +1,4 @@
-import { mockEvents } from "../mock/mockEvents";
+import { mockEvents } from "../mock/mockEvents.js";
 
 export function requireEventOwner(req, res, next) {
     const event = mockEvents.find(e => e.eventId === req.params.id);

@@ -1,6 +1,6 @@
 import express from 'express';
-import { authMiddleware } from '../middleware/authMiddleware';
-import { requireEventOwner } from '../middleware/eventOwnerMiddleware';
+import { authMiddleware } from '../middleware/authMiddleware.js';
+import { requireEventOwner } from '../middleware/eventOwnerMiddleware.js';
 import {
     getAllEvents,
     createEvent,
@@ -15,7 +15,7 @@ import {
     getUpcomingEvents,
     getTrendingEvents,
     searchEvents
-} from "../controllers/eventController";
+} from "../controllers/eventController.js";
 
 const router = express.Router();
 
@@ -27,7 +27,7 @@ router.post("/", authMiddleware, createEvent);
 router.get("/:id", getEventById);
 router.delete("/:id", authMiddleware, requireEventOwner, deleteMyEvent);
 router.put("/:id", authMiddleware, requireEventOwner, editMyEvent);
-router.get("/search?", searchEvents)
+router.get("/search", searchEvents)
 
 router.post("/:id/rsvp", authMiddleware, rsvpToEvent);
 router.delete("/:id/rsvp", authMiddleware, cancelRsvp);
@@ -36,3 +36,5 @@ router.post("/report/:id", authMiddleware, createReport);
 router.post("/review/:id", authMiddleware, createReview);
 
 router.post("/:id/reviews", authMiddleware, submitEventReview);
+
+export default router;

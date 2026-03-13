@@ -8,7 +8,7 @@ import {
     getUserByID, 
     updateUserData, 
     updateUserPassword, 
-    updateUserSettings } from "../controllers/userController";
+    updateUserSettings } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();

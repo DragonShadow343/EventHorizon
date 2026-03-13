@@ -16,12 +16,12 @@ import {
   getMostPopularEvents
 } from "../controllers/adminController.js"
 
-import { authenticateUser } from "../middleware/authMiddleware.js"
+import { authMiddleware } from "../middleware/authMiddleware.js"
 import { requiredRole } from "../middleware/roleMiddleware.js"
 
 const router = express.Router()
 
-router.use(authenticateUser, requiredRole("admin"));
+router.use(authMiddleware, requiredRole("admin"));
 
 router.get("/users", getAllUsers)
 router.get("/users/:id", getUser)

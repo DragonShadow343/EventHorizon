@@ -1,4 +1,4 @@
-import { mockEvents } from "../mock/mockEvents";
+import { mockEvents } from "../mock/mockEvents.js";
 
 export async function getAllEvents(req, res) {
     return res.json(mockEvents)
