@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useFakeAuth } from '../context/FakeAuthContext'
+import { useAuth } from '../context/AuthContext'
 
 export function AdminRoute({ children }) {
-    const { isAuthenticated, user } = useFakeAuth();
+    const { isAuthenticated, user } = useAuth();
     
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
@@ -16,7 +16,7 @@ export function AdminRoute({ children }) {
 }
 
 export function PrivateRoute({ children, role }) {
-    const { isAuthenticated } = useFakeAuth();
+    const { isAuthenticated } = useAuth();
     
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;

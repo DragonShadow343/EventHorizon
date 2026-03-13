@@ -17,13 +17,13 @@ import UserSettings from './pages/user/UserSettings'
 import Events from './pages/events/Events'
 import CreateEventsPage from './pages/events/CreateEventsPage'
 import EventDetails from './pages/events/EventDetails'
-import { FakeAuthContextProvider } from './context/FakeAuthContext';
+import { AuthContextProvider } from './context/AuthContext';
 import {AdminRoute, PrivateRoute} from './components/ProtectedRoute';
 
 function App() {
 
   return (
-    <FakeAuthContextProvider>
+    <AuthContextProvider>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Home />} />
@@ -51,7 +51,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-    </FakeAuthContextProvider>
+    </AuthContextProvider>
   )
 }
 

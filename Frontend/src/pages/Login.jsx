@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { login } from '../api/auth';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({}); 
+
+  const navigate = useNavigate();
+
+  const { loginAs } = useAuth();
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
@@ -26,14 +30,21 @@ const Login = () => {
     if (!password) {
       newErrors.password = "Please enter your password";
     }
- 
-    setErrors(newErrors);
-
+    
     if (Object.keys(newErrors).length > 0) { 
-        return;
+      return;
     } else {
-      await login(email, password);
+      const loggedInUser = await loginAs(email, password);
+      if (loggedInUser?.role === "user") {
+        navigate("/user/dashboard");
+      } else if (loggedInUser?.role === "admin") {
+        navigate("/admin/dashboard");
+      } else{
+        newErrors.creds = "Invalid credentials";
+      }
     }
+
+    setErrors(newErrors);
   };
 
   return (
@@ -48,20 +59,19 @@ const Login = () => {
 
           <h1 className="mt-20 mb-20 text-center text-[1.7em]">Login to Your Account</h1>
 
+          {errors.creds && (<p className="-mt-2 mb-2 text-[0.9em] text-red-600">{errors.creds}</p>)}
           <form onSubmit={handleSubmit} className="mx-auto flex w-1/2 flex-col gap-4">
             <input
-              className="p-3 text-base" 
+              className="p-3 border rounded-lg" 
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {errors.email && (
-              <p className="-mt-2 mb-2 text-[0.9em] text-red-600">{errors.email}</p>
-            )}
+            {errors.email && (<p className="-mt-2 mb-2 text-[0.9em] text-red-600">{errors.email}</p>)}
 
             <input
-              className="p-3 text-base"
+              className="p-3 border rounded-lg"
               type="password"
               placeholder="Password"
               value={password}
@@ -71,7 +81,7 @@ const Login = () => {
               <p className="-mt-2 mb-2 text-[0.9em] text-red-600">{errors.password}</p>
             )}
 
-            <button type="submit" className="bg-blue-500 text-white p-3 rounded">
+            <button type="submit" className="p-3 mx-10 mt-10 cursor-pointer rounded-lg bg-blue-400 hover:bg-blue-500 duration-150 text-white">
               Login
             </button>
           </form>

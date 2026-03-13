@@ -23,7 +23,13 @@ export async function login(email, password) {
         body: JSON.stringify({email, password})
     });
 
-    return res.json();
+    const data = await res.json();
+    
+    if (!res.ok) {
+        throw new Error(data.error);
+    }
+
+    return data;
 }
 
 export async function getCurrentUser(accessToken) {

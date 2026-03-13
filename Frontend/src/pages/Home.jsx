@@ -10,7 +10,7 @@ const Home = () => {
       <div className='flex mx-auto w-fit gap-x-4'>
         <div className='p-10 w-fit'>
           <h3 className='font-extrabold'>Admin Pages</h3>
-          <p>Swap with "admin" to access admin routes in <span className='font-mono text-sm bg-gray-200 rounded-sm px-2'>./src/context/FakeAuthContext.jsx</span></p>
+          <p>Swap with "admin" to access admin routes in <span className='font-mono text-sm bg-gray-200 rounded-sm px-2'>./src/context/AuthContext.jsx</span></p>
           <ul className='list-disc'>
             <li>
               <NavLink to="/admin/dashboard">Dashboard</NavLink>

@@ -21,24 +21,38 @@ export async function register(req, res) {
 }
 
 export async function login(req, res) {
-    const {email, password} = req.body;
+    try {
+        const {email, password} = req.body;
 
-    const user = await User.findOne({email});
-    if (!user) return res.status(401).json({error: "Invalid credentials"});
+        const user = await User.findOne({email});
+        if (!user) return res.status(401).json({error: "Invalid credentials"});
 
-    const ok = await bcrypt.compare(password, user.passwordHash);
-    if (!ok) return res.status(401).json({error: "Invalid credentials"});
+        const ok = await bcrypt.compare(password, user.passwordHash);
+        if (!ok) return res.status(401).json({error: "Invalid credentials"});
 
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
 
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false, // change to true for prod
-        sameSite: "lax",
-    })
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false, // change to true for prod
+            sameSite: "lax",
+        })
 
-    res.json({accessToken})
+        res.json({
+            message: "Login successful",
+            user: {
+                role: user.role, 
+                name: user.name,
+                email: user.email,
+            },
+            accessToken
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
 }
 
 export async function me(req, res) {
