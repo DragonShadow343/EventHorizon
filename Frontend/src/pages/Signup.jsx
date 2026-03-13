@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { register } from '../api/auth';
 
 const Signup = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rePassword, setRepassword] = useState('');
   const [errors, setErrors] = useState({});
+
+  const navigate = useNavigate();
   
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email format validation
@@ -59,7 +62,12 @@ const Signup = () => {
       if (Object.keys(newErrors).length > 0) { 
           return;
       } else {
-        await register(email, password);
+        try {
+          await register(name, email, password);
+          navigate("/login");
+        } catch (err) {
+          setErrors({ email: err.message });
+        }
       }
     };
 
@@ -74,6 +82,14 @@ const Signup = () => {
 
 
           <form onSubmit={handleSubmit} className='flex flex-col gap-4 w-96 mx-auto my-10'>
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              className='p-3 border rounded-lg'
+              onChange={(e) => setName(e.target.value)}
+              />
+            {errors.name && <p className="text-red-500">{errors.name}</p>}
             <input
               type="email"
               placeholder="Email"

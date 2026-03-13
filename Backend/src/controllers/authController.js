@@ -4,18 +4,19 @@ import User from "./../models/User.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/tokenUtils.js";
 
 export async function register(req, res) {
-    const {email, password} = req.body;
+    const {email, password, name} = req.body;
 
     try {
         const exists = await User.findOne({email});
-        if (exists) return res.status(400).json({error: "Email in use"});
+        if (exists) return res.status(409).json({error: "Email in use"});
 
         const passwordHash = await bcrypt.hash(password, 10);
-        const user = await User.create({email, passwordHash});
+        const user = await User.create({email, passwordHash, name});
 
         res.status(201).json({message:"Registered", userId: user._id});
     } catch (err) {
-        res.status(500).json({error: "Server error"});
+        console.error(err);
+        res.status(500).json({error: err.message});
     }
 }
 
@@ -45,7 +46,7 @@ export async function me(req, res) {
     if (!token) return res.status(401).json({error: "Missing token"});
 
     try {
-        const payload = jwt.verify(token, process.JWT_ACCESS_TOKEN);
+        const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
         const user = await User.findById(payload.id).select("-passwordHash");
         res.json(user);
     } catch (err) {

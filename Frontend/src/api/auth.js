@@ -1,19 +1,25 @@
 const API = "http://localhost:4000/auth";
 
-export async function register(email, password) {
+export async function register(name, email, password) {
     const res = await fetch(`${API}/register`, {
         method: "POST",
-        headers: { "Content-Type": "applications/json"},
-        body: JSON.stringify({email, password})
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({name, email, password})
     });
 
-    return res.json();
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(data.error);
+    }
+
+    return data;
 }
 
 export async function login(email, password) {
     const res = await fetch(`${API}/login`, {
         method: "POST",
-        headers: { "Content-Type": "applications/json"},
+        headers: { "Content-Type": "application/json"},
         body: JSON.stringify({email, password})
     });
 
