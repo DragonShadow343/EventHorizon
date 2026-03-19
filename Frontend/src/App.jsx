@@ -20,6 +20,9 @@ import EventDetails from './pages/events/EventDetails'
 import { AuthContextProvider } from './context/AuthContext';
 import {AdminRoute, PrivateRoute} from './components/ProtectedRoute';
 
+import EventsSearchLab from "./pages/events/EventsSearchLab";
+import SubmitReportLab from "./pages/user/SubmitReportLab";
+
 function App() {
 
   return (
@@ -33,6 +36,11 @@ function App() {
           <Route path='/events' element={<Events />} />
           <Route path='/events/create' element={<CreateEventsPage />} />
           <Route path='/events/eventdetails' element={<EventDetails />} />
+
+          {/* Lab Pages */}
+          <Route path='/events/search-lab' element={<EventsSearchLab />} />
+          <Route path='/user/submit-report-lab' element={<SubmitReportLab />} />
+
           {/* Admin Pages */}
           <Route path='/admin/' element = {<AdminRoute />}>
             <Route path='dashboard' element={<AdminDashboard />} />

@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "title": "Tech Conference 2026",
+    "category": "Technology",
+    "location": "Victoria",
+    "description": "A conference about AI, web apps, and startups."
+  },
+  {
+    "id": 2,
+    "title": "Music Fest Night",
+    "category": "Entertainment",
+    "location": "Vancouver",
+    "description": "Live music and outdoor performances."
+  },
+  {
+    "id": 3,
+    "title": "Basketball Tournament",
+    "category": "Sports",
+    "location": "Nanaimo",
+    "description": "University teams compete in a weekend tournament."
+  },
+  {
+    "id": 4,
+    "title": "Startup Pitch Day",
+    "category": "Business",
+    "location": "Victoria",
+    "description": "Students pitch business ideas to judges."
+  },
+  {
+    "id": 5,
+    "title": "Art Expo",
+    "category": "Art",
+    "location": "Kelowna",
+    "description": "An exhibition of local artists and designers."
+  },
+  {
+    "id": 6,
+    "title": "Coding Bootcamp",
+    "category": "Education",
+    "location": "Burnaby",
+    "description": "Hands-on React and Node.js coding sessions."
+  },
+  {
+    "id": 7,
+    "title": "Gaming Tournament",
+    "category": "Gaming",
+    "location": "Surrey",
+    "description": "Competitive esports event for students."
+  },
+  {
+    "id": 8,
+    "title": "Food Carnival",
+    "category": "Food",
+    "location": "Richmond",
+    "description": "Local vendors and international food tasting."
+  },
+  {
+    "id": 9,
+    "title": "Career Fair",
+    "category": "Career",
+    "location": "Victoria",
+    "description": "Meet employers and explore job opportunities."
+  },
+  {
+    "id": 10,
+    "title": "Film Screening Night",
+    "category": "Entertainment",
+    "location": "Vancouver",
+    "description": "Independent films and student short films."
+  }
+]
