@@ -1,6 +1,17 @@
 import UserNavbar from "../../components/NavBar/UserNavbar";
+import { useAuth } from "./../../context/AuthContext"
+import { useNavigate } from "react-router";
 
 const UserSettings = () => {
+
+  const { logout } = useAuth();
+  const Navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    Navigate("/");
+  }
+
   return (
     <div className="min-h-screen bg-[#f3f3f3] p-6">
       <div className="mx-auto max-w-4xl">
@@ -40,7 +51,7 @@ const UserSettings = () => {
                   Delete Account
                 </button>
 
-                <button className="rounded-lg bg-blue-500 px-5 py-2 text-white">
+                <button onClick={handleLogout} className="rounded-lg bg-blue-500 px-5 py-2 text-white">
                   Logout
                 </button>
               </div>
