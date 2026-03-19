@@ -1,12 +1,12 @@
-import { mockEvents } from "../mock/mockEvents.js";
+import Event from "../models/Event";
 
 export async function getAllEvents(req, res) {
-    return res.json(mockEvents)
+    return res.json(Event)
 }
 
 export async function getEventById(req, res) {
     const {id} = req.params;
-    const event = mockEvents.find(e => e.eventId === id);
+    const event = Event.find(e => e.eventId === id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -17,7 +17,7 @@ export async function getEventById(req, res) {
 
 export async function getEventsByOrganizer(req, res) {
     const {id} = req.params;
-    const event = mockEvents.filter(e => e.organizerId === id);
+    const event = Event.filter(e => e.organizerId === id);
 
     res.json(event);
 }
@@ -25,17 +25,17 @@ export async function getEventsByOrganizer(req, res) {
 export function deleteMyEvent(req, res) {
     const { id } = req.params;
 
-    const index = mockEvents.findIndex(e => e.eventId === id);
+    const index = Event.findIndex(e => e.eventId === id);
 
     if (index === -1) {
         return res.status(404).json({ error: "Event not found" });
     }
 
-    if (mockEvents[index].organizerId !== req.user.id) {
+    if (Event[index].organizerId !== req.user.id) {
         return res.status(403).json({ error: "Not authorized" });
     }
 
-    const deleted = mockEvents.splice(index, 1);
+    const deleted = Event.splice(index, 1);
 
     res.json({ message: "Event deleted", event: deleted[0] });
 }
@@ -43,7 +43,7 @@ export function deleteMyEvent(req, res) {
 export async function editMyEvent(req, res) {
     const { id } = req.params;
 
-    const event = mockEvents.find(e => e.eventId === id);
+    const event = Event.find(e => e.eventId === id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -70,7 +70,7 @@ export function createEvent(req, res) {
         rsvp: [],
         reviews: [],
     };
-    mockEvents.push(newEvent);
+    Event.push(newEvent);
     res.status(201).json(newEvent);
 }
 
@@ -78,7 +78,7 @@ export function rsvpToEvent(req, res) {
 
     const { id } = req.params;
 
-    const event = mockEvents.find(e => e.eventId === id);
+    const event = Event.find(e => e.eventId === id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -100,7 +100,7 @@ export function rsvpToEvent(req, res) {
 export function cancelRsvp(req, res) {
     const { id } = req.params;
 
-    const event = mockEvents.find(e => e.eventId === id);
+    const event = Event.find(e => e.eventId === id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -116,7 +116,7 @@ export function submitEventReview(req, res) {
 
     const { id } = req.params;
 
-    const event = mockEvents.find(e => e.eventId === id);
+    const event = Event.find(e => e.eventId === id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -148,7 +148,7 @@ export function submitEventReview(req, res) {
 export function getUpcomingEvents(req, res) {
     const now = new Date();
 
-    const upcoming = mockEvents
+    const upcoming = Event
         .filter(e => new Date(e.date) > now)
         .sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -159,10 +159,10 @@ export function searchEvents(req, res) {
     const { q } = req.query;
 
     if (!q) {
-        return res.json(mockEvents);
+        return res.json(Event);
     }
 
-    const results = mockEvents.filter(event =>
+    const results = Event.filter(event =>
         event.title.toLowerCase().includes(q.toLowerCase()) ||
         event.description.toLowerCase().includes(q.toLowerCase())
     );
@@ -171,7 +171,7 @@ export function searchEvents(req, res) {
 }
 
 export function getTrendingEvents(req, res) {
-    const trending = [...mockEvents]
+    const trending = [...Event]
         .sort((a, b) => b.rsvp.length - a.rsvp.length)
         .slice(0, 5);
 
@@ -183,7 +183,7 @@ export async function createReport(req, res) {
     const userId = req.user.id;
     const { reason, description } = req.body;
 
-    const event = mockEvents.find(e => e.id === eventId);
+    const event = Event.find(e => e.id === eventId);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -209,7 +209,7 @@ export async function createReview(req, res) {
     const userId = req.user.id;
     const { rating, comment } = req.body;
 
-    const event = mockEvents.find(e => e.id === eventId);
+    const event = Event.find(e => e.id === eventId);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
