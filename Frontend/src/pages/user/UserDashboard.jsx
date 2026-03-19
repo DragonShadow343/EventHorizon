@@ -1,7 +1,11 @@
 import UserNavbar from "../../components/NavBar/UserNavbar";
 import EventCard from "../../components/UserDashboard/EventCard";
+import { useAuth } from "../../context/AuthContext"
 
 const UserDashboard = () => {
+
+  const { user } = useAuth();
+
   const myTickets = [
     { id: "t1", name: "Event Name", desc: "Event Description" },
     { id: "t2", name: "Event Name", desc: "Event Description" },
@@ -20,7 +24,9 @@ const UserDashboard = () => {
       <div className="mx-auto max-w-6xl">
         <UserNavbar />
 
-        <main className="mt-6">
+        <h1 className="text-3xl m-6 my-10">Hi, {user.name}</h1>
+
+        <main className="mt-3">
           
 
           {/* My Tickets */}

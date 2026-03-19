@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 
 dotenv.config();
-// connectDB(); //temp commented out for lab 7
+connectDB();
 
 const app = express();
 app.use(express.json());
