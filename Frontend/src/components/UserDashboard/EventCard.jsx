@@ -1,28 +1,28 @@
 const EventCard = ({ event }) => {
   return (
-    <div class="flex bg-white rounded-lg shadow p-4">
-      {/* image placeholder */}
-      <div class="relative w-1/3">
-        <div class="bg-gray-200 h-full" />
-        <div class="absolute inset-0 flex items-center justify-center">
-        </div>
-      </div>
+    <div className="flex rounded-xl bg-white p-4 shadow-sm">
+      {/* Image */}
+      <div className="w-1/3 rounded-lg bg-gray-200" />
 
-      {/* content */}
-      <div class="flex-1 p-4 flex flex-col justify-between">
-        <div class="text-lg font-bold">
-          {event && event.name ? event.name : "Event Name"}
-        </div>
+      {/* Content */}
+      <div className="flex flex-1 flex-col justify-between p-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800">
+            {event?.name || "Event Name"}
+          </h3>
 
-        <div class="text-gray-600">
-          {event && event.desc ? event.desc : "Event Description"}
+          <p className="mt-1 text-sm text-gray-500">
+            {event?.desc || "Event Description"}
+          </p>
         </div>
 
-        <div class="flex items-center text-blue-500">
-          <span class="font-medium">More info</span>
-          <span class="ml-2">→</span>
+        <div className="mt-4 flex items-center text-blue-500">
+          <span className="text-sm font-medium">More info</span>
+          <span className="ml-2">→</span>
         </div>
       </div>
     </div>
   );
 };
+
+export default EventCard;

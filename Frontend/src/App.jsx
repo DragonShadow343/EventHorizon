@@ -43,12 +43,9 @@ function App() {
           </Route>
 
           {/* User Pages */}
-          <Route path='/user/' element={<PrivateRoute />}>
-            <Route path='dashboard' element={<UserDashboard />} />
-            <Route path='settings' element={<UserSettings />} />
-            {/* Event Pages */}
-            <Route path='events/create' element={<CreateEventsPage />} />
-          </Route>
+          <Route path="/user/dashboard" element={<UserDashboard />} />
+          <Route path="/user/settings" element={<UserSettings />} />
+
         </Routes>
       </BrowserRouter>
     </AuthContextProvider>
