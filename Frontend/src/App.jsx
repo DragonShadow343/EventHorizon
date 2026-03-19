@@ -31,7 +31,8 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/events' element={<Events />} />
-            <Route path='/events/eventdetails' element={<EventDetails />} />
+          <Route path='/events/create' element={<CreateEventsPage />} />
+          <Route path='/events/eventdetails' element={<EventDetails />} />
           {/* Admin Pages */}
           <Route path='/admin/' element = {<AdminRoute />}>
             <Route path='dashboard' element={<AdminDashboard />} />
