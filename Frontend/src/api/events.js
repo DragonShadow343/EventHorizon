@@ -87,3 +87,15 @@ export async function createReview(eventId, reviewData) {
     })
     return res.json();
 }
+
+export const searchEvents = async (searchTerm) => {
+  const response = await fetch(
+    `${BASE_URL}/search?q=${encodeURIComponent(searchTerm)}`,
+    {
+      method: "GET",
+      credentials: "include"
+    }
+  );
+
+  return response.json();
+};

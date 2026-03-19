@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { submitReport } from "../../api/lab";
+// import { submitReport } from "../../api/lab";
 
 export default function SubmitReport() {
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ export default function SubmitReport() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = await submitReport(formData);
+    // const data = await submitReport(formData);
 
     if (data.success) {
       setServerMessage(data.message);

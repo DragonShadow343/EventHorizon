@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { searchEvents } from "../../api/lab";
+import { searchEvents } from "../../api/events";
 
 export default function EventsSearch() {
   const [searchTerm, setSearchTerm] = useState("");
