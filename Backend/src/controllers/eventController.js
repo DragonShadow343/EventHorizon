@@ -1,12 +1,13 @@
 import Event from "../models/Event.js";
 
 export async function getAllEvents(req, res) {
-    return res.json(Event)
+    const events = await Event.find();
+    return res.json(events);
 }
 
 export async function getEventById(req, res) {
     const {id} = req.params;
-    const event = Event.find(e => e.eventId === id);
+    const event = await Event.findById(id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -17,50 +18,50 @@ export async function getEventById(req, res) {
 
 export async function getEventsByOrganizer(req, res) {
     const {id} = req.params;
-    const event = Event.filter(e => e.organizerId === id);
+    const event = await Event.find({ organizerId: id });
 
     res.json(event);
 }
 
-export function deleteMyEvent(req, res) {
+export async function deleteMyEvent(req, res) {
     const { id } = req.params;
 
-    const index = Event.findIndex(e => e.eventId === id);
-
-    if (index === -1) {
-        return res.status(404).json({ error: "Event not found" });
-    }
-
-    if (Event[index].organizerId !== req.user.id) {
-        return res.status(403).json({ error: "Not authorized" });
-    }
-
-    const deleted = Event.splice(index, 1);
-
-    res.json({ message: "Event deleted", event: deleted[0] });
-}
-
-export async function editMyEvent(req, res) {
-    const { id } = req.params;
-
-    const event = Event.find(e => e.eventId === id);
+    const event = await Event.findById(id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
     }
 
-    if (event.organizerId !== req.user.id) {
+    if (event.organizerId.toString() !== req.user.id) {
+        return res.status(403).json({ error: "Not authorized" });
+    }
+
+    await Event.findByIdAndDelete(id);
+
+    res.json({ message: "Event deleted", event });
+}
+
+export async function editMyEvent(req, res) {
+    const { id } = req.params;
+
+    const event = await Event.findById(id);
+
+    if (!event) {
+        return res.status(404).json({ error: "Event not found" });
+    }
+
+    if (event.organizerId.toString() !== req.user.id) {
         return res.status(403).json({ error: "Not authorized to edit this event" });
     }
 
     Object.assign(event, req.body);
+    await event.save();
 
     res.json(event);
 }
 
-export function createEvent(req, res) {
-    const newEvent = { 
-        eventId: "e" + Date.now().toString(),
+export async function createEvent(req, res) {
+    const newEvent = new Event({
         title: req.body.title,
         description: req.body.description,
         date: req.body.date,
@@ -69,16 +70,16 @@ export function createEvent(req, res) {
         organizerId: req.user.id,
         rsvp: [],
         reviews: [],
-    };
-    Event.push(newEvent);
+    });
+
+    await newEvent.save();
     res.status(201).json(newEvent);
 }
 
-export function rsvpToEvent(req, res) {
-
+export async function rsvpToEvent(req, res) {
     const { id } = req.params;
 
-    const event = Event.find(e => e.eventId === id);
+    const event = await Event.findById(id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -93,45 +94,39 @@ export function rsvpToEvent(req, res) {
     }
 
     event.rsvp.push(req.user.id);
+    await event.save();
 
     res.json({ message: "RSVP successful", event });
 }
 
-export function cancelRsvp(req, res) {
+export async function cancelRsvp(req, res) {
     const { id } = req.params;
 
-    const event = Event.find(e => e.eventId === id);
+    const event = await Event.findById(id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
     }
 
-    event.rsvp = event.rsvp.filter(userId => userId !== req.user.id);
+    event.rsvp = event.rsvp.filter(userId => userId.toString() !== req.user.id);
+    await event.save();
 
     res.json({ message: "RSVP cancelled", event });
 }
 
-export function submitEventReview(req, res) {
-    // TODO: Can't review until event has begun or user has attended
-
+export async function submitEventReview(req, res) {
     const { id } = req.params;
 
-    const event = Event.find(e => e.eventId === id);
+    const event = await Event.findById(id);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
     }
 
-    const alreadyReviewed = event.reviews.find(r => r.userId === req.user.id);
+    const alreadyReviewed = event.reviews.find(r => r.userId.toString() === req.user.id);
     if (alreadyReviewed) {
         return res.status(400).json({ error: "User has already submitted a review" });
     }
-
-    // Example Body we want to use
-    // {
-    // "rating": 5,
-    // "comment": "Amazing event"
-    // }
 
     const review = {
         userId: req.user.id,
@@ -141,39 +136,43 @@ export function submitEventReview(req, res) {
     };
 
     event.reviews.push(review);
+    await event.save();
 
     res.json({ message: "Review submitted", review });
 }
 
-export function getUpcomingEvents(req, res) {
+export async function getUpcomingEvents(req, res) {
     const now = new Date();
 
-    const upcoming = Event
-        .filter(e => new Date(e.date) > now)
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    const upcoming = await Event.find({ date: { $gt: now } }).sort({ date: 1 });
 
     res.json(upcoming);
 }
 
-export function searchEvents(req, res) {
+export async function searchEvents(req, res) {
     const { q } = req.query;
 
     if (!q) {
-        return res.json(Event);
+        const events = await Event.find();
+        return res.json(events);
     }
 
-    const results = Event.filter(event =>
-        event.title.toLowerCase().includes(q.toLowerCase()) ||
-        event.description.toLowerCase().includes(q.toLowerCase())
-    );
+    const results = await Event.find({
+        $or: [
+            { title: { $regex: q, $options: 'i' } },
+            { description: { $regex: q, $options: 'i' } }
+        ]
+    });
 
     res.json(results);
 }
 
-export function getTrendingEvents(req, res) {
-    const trending = [...Event]
-        .sort((a, b) => b.rsvp.length - a.rsvp.length)
-        .slice(0, 5);
+export async function getTrendingEvents(req, res) {
+    const trending = await Event.aggregate([
+        { $addFields: { rsvpCount: { $size: "$rsvp" } } },
+        { $sort: { rsvpCount: -1 } },
+        { $limit: 5 }
+    ]);
 
     res.json(trending);
 }
@@ -183,7 +182,7 @@ export async function createReport(req, res) {
     const userId = req.user.id;
     const { reason, description } = req.body;
 
-    const event = Event.find(e => e.id === eventId);
+    const event = await Event.findById(eventId);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -199,7 +198,11 @@ export async function createReport(req, res) {
         createdAt: new Date()
     };
 
-    reports.push(newReport);
+    // NOTE: You should ideally store reports in DB, but keeping your structure
+    if (!event.reports) event.reports = [];
+    event.reports.push(newReport);
+
+    await event.save();
 
     res.status(201).json(newReport);
 }
@@ -209,21 +212,19 @@ export async function createReview(req, res) {
     const userId = req.user.id;
     const { rating, comment } = req.body;
 
-    const event = Event.find(e => e.id === eventId);
+    const event = await Event.findById(eventId);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
     }
 
-    // Check if user RSVP'd (optional but good practice)
-    const hasRSVPd = event.rsvpUsers.includes(userId);
+    const hasRSVPd = event.rsvp.some(id => id.toString() === userId);
 
     if (!hasRSVPd) {
         return res.status(403).json({ error: "You must attend the event to review it" });
     }
 
     const newReview = {
-        id: Date.now().toString(),
         userId,
         rating,
         comment,
@@ -231,6 +232,7 @@ export async function createReview(req, res) {
     };
 
     event.reviews.push(newReview);
+    await event.save();
 
     res.status(201).json(newReview);
 }

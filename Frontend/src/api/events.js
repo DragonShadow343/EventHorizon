@@ -90,7 +90,7 @@ export async function createReview(eventId, reviewData) {
 
 export const searchEvents = async (searchTerm) => {
   const response = await fetch(
-    `${BASE_URL}/search?q=${encodeURIComponent(searchTerm)}`,
+    `${API}/search?q=${encodeURIComponent(searchTerm)}`,
     {
       method: "GET",
       credentials: "include"

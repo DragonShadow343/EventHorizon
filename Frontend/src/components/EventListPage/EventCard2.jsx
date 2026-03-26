@@ -1,6 +1,6 @@
 const EventCard2 = ({ event }) => {
     return (
-        <div className="flex bg-white rounded-lg shadow p-4 w-full h-40 ml-1 mr-6 my-6">
+        <div className="flex bg-white rounded-lg shadow border border-gray-100 p-4 w-full h-40">
             {/* image placeholder */}
             <div className="relative w-1/4">
                 <div className="bg-gray-200 h-full" />
