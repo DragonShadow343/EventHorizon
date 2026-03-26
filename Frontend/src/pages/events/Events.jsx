@@ -4,10 +4,12 @@ import Navbar from '../../components/NavBar/Navbar'
 import SearchBar from '../../components/EventListPage/SearchBar'
 import { getAllEvents, searchEvents } from '../../api/events'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Events = () => {
   
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -54,6 +56,7 @@ const Events = () => {
                 date: event.date,
                 location: event.location
               }}
+              onClick={() => navigate(`/events/${event._id}`)}
             />
           )))
           :

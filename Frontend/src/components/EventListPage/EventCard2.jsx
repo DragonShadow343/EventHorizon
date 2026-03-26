@@ -1,6 +1,6 @@
-const EventCard2 = ({ event }) => {
+const EventCard2 = ({ event, onClick }) => {
     return (
-        <div className="flex bg-white rounded-lg shadow border border-gray-100 p-4 w-full h-40">
+        <div onClick={onClick} className="flex bg-white rounded-lg shadow border border-gray-100 p-4 w-full h-40 cursor-pointer">
             {/* image placeholder */}
             <div className="relative w-1/4">
                 <div className="bg-gray-200 h-full" />

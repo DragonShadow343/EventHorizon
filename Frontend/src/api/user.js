@@ -18,6 +18,8 @@ export async function getUserByID(userId) {
     return res.json();
 }
 
+// TODO: Add endpoint to get just the name
+
 export async function getMyEvents() {
     const res = await fetch(`${API}/events`, {credentials: "include"})
     return res.json();

@@ -5,7 +5,7 @@ export async function getAllEvents() {
     return res.json();
 }
 
-export async function getEventsByID(id) {
+export async function getEventByID(id) {
     const res = await fetch(`${API}/${id}`);
     return res.json();
 }
