@@ -41,15 +41,13 @@ function App() {
           <Route path='/events/search-lab' element={<EventsSearchLab />} />
           <Route path='/user/submit-report-lab' element={<SubmitReportLab />} />
 
-          {/* Admin Pages */}
-          <Route path='/admin/' element = {<AdminRoute />}>
-            <Route path='dashboard' element={<AdminDashboard />} />
-            <Route path='reports' element={<AdminReports />} />
-            <Route path='reportdetails' element={<AdminReportDetails />} />
-            <Route path='user' element={<AdminActiveUsers />} />
-            <Route path='userdetails' element={<AdminUserDetails />} />
-            <Route path='settings' element={<AdminSettings />} />
-          </Route>
+          {/* Admin Pages (TEMPORARY — remove AdminRoute for UI testing) */}
+          <Route path='/admin/dashboard' element={<AdminDashboard />} />
+          <Route path='/admin/reports' element={<AdminReports />} />
+          <Route path='/admin/reportdetails' element={<AdminReportDetails />} />
+          <Route path='/admin/user' element={<AdminActiveUsers />} />
+          <Route path='/admin/userdetails' element={<AdminUserDetails />} />
+          <Route path='/admin/settings' element={<AdminSettings />} />
 
           {/* User Pages */}
           <Route path="/user/dashboard" element={<UserDashboard />} />
