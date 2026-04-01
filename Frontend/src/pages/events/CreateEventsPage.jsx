@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import { useNavigate } from 'react-router'
 import Navbar from '../../components/NavBar/Navbar'
 import { createEvent } from '../../api/events'
 
@@ -39,6 +40,8 @@ const CreateEventsPage = () => {
     image: null,
     capacity: '',
   })
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [imageError, setImageError] = useState('')
   const fileInputRef = useRef(null)
@@ -50,6 +53,8 @@ const CreateEventsPage = () => {
   }
 
   const handleSave = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const { title, description, date, time, location, capacity, image } = eventData;
 
     const missingFields = [];
@@ -76,9 +81,12 @@ const CreateEventsPage = () => {
       formData.append('capacity', Number(capacity));
       formData.append('image', image);
 
-      await createEvent(formData); // send FormData to API
+      const createdEvent = await createEvent(formData); // send FormData to API
+      navigate(`/events/${createdEvent._id}`)
     } catch (err) {
       console.error('Failed to create event:', err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -196,8 +204,9 @@ const CreateEventsPage = () => {
                 <button
                   className="w-full rounded-2xl bg-[#5b9df0] py-4 text-white font-semibold"
                   onClick={handleSave}
+                  disabled={isSubmitting}
                 >
-                  Save Event
+                  {isSubmitting? "Creating..." : "Save Event"}
                 </button>
               </div>
 
