@@ -1,4 +1,6 @@
 import Event from "../models/Event.js";
+import fs from "fs";
+import path from "path";
 
 export async function getAllEvents(req, res) {
     const events = await Event.find();
@@ -34,6 +36,16 @@ export async function deleteMyEvent(req, res) {
 
     if (event.organizerId.toString() !== req.user.id) {
         return res.status(403).json({ error: "Not authorized" });
+    }
+
+    // Delete associated uploaded images
+    if (event.photos && event.photos.length > 0) {
+        event.photos.forEach((filename) => {
+            const filePath = path.join("uploads", filename);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        });
     }
 
     await Event.findByIdAndDelete(id);

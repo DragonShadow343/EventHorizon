@@ -1,28 +1,66 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getEventByID } from '../../api/events';
+import { getEventByID, deleteMyEvent } from '../../api/events';
 import { getUserByID } from '../../api/user';
+import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/NavBar/Navbar';
 
 const EventPage = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [organizerName, setOrganizerName] = useState("");
+  const [isOwner, setIsOwner] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const data = await getEventByID(id);
         setEvent(data);
-        const userData = await getUserByID(data.organizerId);
+        const organizerId = data.organizerId;
+        const userData = await getUserByID(organizerId);
         setOrganizerName(userData.name);
+        const eventOwner = user && user.id === organizerId;
+        setIsOwner(eventOwner);
       } catch (err) {
         console.error('Error fetching event:', err);
       }
     };
 
     fetchEvent();
-  }, [id]);
+  }, [id, user]);
+
+  const handleBlueButton = () => {
+    if (isOwner) {
+      // navigate(`/events/edit/${id}`);
+      console.log("Edit event clicked");
+    } else {
+      // RSVP logic here later
+      console.log("RSVP clicked");
+    }
+  };
+
+  const handleRedButton = async () => {
+    (isOwner)? handleDelete() : handleReport();
+  }
+
+  const handleDelete = async () => {
+    if (!isOwner) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
+    if (!confirmDelete) return;
+    try {
+      await deleteMyEvent(id);
+      navigate('/events');
+    } catch (err) {
+      console.error('Error deleting event:', err);
+    }
+  }
+
+  const handleReport = async () => {
+    console.log("Report button clicked");
+  }
+
 
   if (!event) return <div>Loading...</div>;
 
@@ -80,9 +118,9 @@ const EventPage = () => {
               <p className="text-gray-600">Location: <span className="text-gray-800">{event.location}</span></p>
 
               <div className="grid grid-cols-2 grid-rows-2 gap-2">
-                <button className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow">RSVP</button>
-                <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow">Share</button>
-                <button className="bg-red-400 hover:bg-red-500 text-white font-semibold px-6 py-2 rounded-lg shadow">Report</button>
+                <button onClick={handleBlueButton} className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">{isOwner? "Edit Event" : "RSVP"}</button>
+                <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">Share</button>
+                <button onClick={handleRedButton} className="bg-red-400 hover:bg-red-500 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">{isOwner? "Delete Event" : "Report"}</button>
               </div>
             </div>
           </div>

@@ -1,12 +1,16 @@
-import { mockEvents } from "../mock/mockEvents.js";
+import Event from "../models/Event.js";
 
-export function requireEventOwner(req, res, next) {
-    const event = mockEvents.find(e => e.eventId === req.params.id);
+export async function requireEventOwner(req, res, next) {
+    const { id } = req.params;
 
-    if (!event) return res.status(404).json({error: "Eventnot found"});
+    const event = await Event.findById(id);
 
-    if (event.organizerId !== req.user.id){
-        return res.status(403).json({error: "Not your event"});
+    if (!event) {
+        return res.status(404).json({ error: "Event not found" });
+    }
+
+    if (event.organizerId.toString() !== req.user.id) {
+        return res.status(403).json({ error: "Not your event" });
     }
 
     req.event = event;
