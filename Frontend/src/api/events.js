@@ -54,8 +54,11 @@ export async function cancelRsvp(eventId) {
 }
 
 export async function deleteMyEvent(eventId) {
-    const res = await fetch(`${API}/deletevent/${eventId}`, {
+    const res = await fetch(`${API}/${eventId}`, {
         method: "DELETE",
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
     });
 }

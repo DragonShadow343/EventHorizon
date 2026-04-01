@@ -42,6 +42,7 @@ export async function login(req, res) {
         res.json({
             message: "Login successful",
             user: {
+                id: user.id,
                 role: user.role, 
                 name: user.name,
                 email: user.email,
