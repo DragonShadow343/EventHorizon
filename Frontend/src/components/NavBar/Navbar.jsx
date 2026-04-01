@@ -12,6 +12,7 @@ const navConfig = {
   user: [
     { label: "Dashboard", path: "/user/dashboard" },
     { label: "Events", path: "/events" },
+    { label: "Create Event", path: "/user/events/create" },
     { label: "My Events", path: "/user/my-events" },
     { label: "Settings", path: "/user/settings" },
   ],

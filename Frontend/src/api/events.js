@@ -16,11 +16,13 @@ export async function getEventsByOrganizer(userId) {
 }
 
 export async function createEvent(eventData) {
-    const res = await fetch(`${API}/createvent`, {
+    const res = await fetch(`${API}/`, {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
-        body: JSON.stringify(eventData),
+        body: eventData,
     });
     return res.json();
 }

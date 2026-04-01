@@ -61,19 +61,33 @@ export async function editMyEvent(req, res) {
 }
 
 export async function createEvent(req, res) {
+  try {
+    // req.body now has the text fields
+    const { title, description, date, time, location, capacity } = req.body || {};
+
+    if (!title || !description || !date || !time || !location || !capacity) {
+      return res.status(400).json({ message: 'Missing required event fields' });
+    }
+
     const newEvent = new Event({
-        title: req.body.title,
-        description: req.body.description,
-        date: req.body.date,
-        location: req.body.location,
-        capacity: req.body.capacity,
-        organizerId: req.user.id,
-        rsvp: [],
-        reviews: [],
+      title,
+      description,
+      date,
+      time,
+      location,
+      capacity,
+      organizerId: req.user.id,
+      photos: req.file ? [req.file.filename] : [],
+      rsvp: [],
+      reviews: [],
     });
 
     await newEvent.save();
     res.status(201).json(newEvent);
+  } catch (err) {
+    console.error("Create event failed:", err);
+    res.status(500).json({ message: "Failed to create event" });
+  }
 }
 
 export async function rsvpToEvent(req, res) {
