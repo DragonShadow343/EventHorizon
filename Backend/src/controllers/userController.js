@@ -1,6 +1,6 @@
-import User from "../models/User.js";
-import Event from "../models/Event.js";
 import bcrypt from 'bcrypt';
+import Event from "../models/Event.js";
+import User from "../models/User.js";
 
 export async function updateUserData(req, res) {
   const user = await User.findById(req.user.id);
@@ -84,4 +84,15 @@ export async function getMyReviews(req, res) {
   });
 
   res.json(reviews);
+}
+
+export async function getAllUsers(req, res) {
+  try {
+    const users = await User.find().select("name email");
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
 }

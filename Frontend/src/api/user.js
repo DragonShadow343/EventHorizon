@@ -64,3 +64,8 @@ export async function updateUserSettings(newSettings) {
     });
     return res.json();
 }
+
+export async function getAllUsers() {
+    const res = await fetch("http://localhost:4000/users");
+    return res.json();
+}

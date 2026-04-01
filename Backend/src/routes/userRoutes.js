@@ -1,14 +1,16 @@
 import express from "express";
-import { 
-    getMyEvents, 
-    getMyPastEvents, 
-    getMyPastRsvps, 
-    getMyReviews, 
-    getMyRsvps, 
-    getUserByID, 
-    updateUserData, 
-    updateUserPassword, 
-    updateUserSettings } from "../controllers/userController.js";
+import {
+    getAllUsers,
+    getMyEvents,
+    getMyPastEvents,
+    getMyPastRsvps,
+    getMyReviews,
+    getMyRsvps,
+    getUserByID,
+    updateUserData,
+    updateUserPassword,
+    updateUserSettings
+} from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -26,5 +28,7 @@ router.put("/me/settings", authMiddleware, updateUserSettings);
 router.put("/me/changepassword", authMiddleware, updateUserPassword);
 
 router.get("/:id", getUserByID)
+
+router.get("/", getAllUsers);
 
 export default router;
