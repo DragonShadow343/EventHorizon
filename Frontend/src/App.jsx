@@ -13,15 +13,13 @@ import AdminSettings from './pages/admin/AdminSettings'
 
 import UserDashboard from './pages/user/UserDashboard'
 import UserSettings from './pages/user/UserSettings'
+import UserEvents from './pages/user/UserEvents'
 
 import Events from './pages/events/Events'
 import CreateEventsPage from './pages/events/CreateEventsPage'
 import EventDetails from './pages/events/EventDetails'
 import { AuthContextProvider } from './context/AuthContext';
 import {AdminRoute, PrivateRoute} from './components/ProtectedRoute';
-
-import EventsSearchLab from "./pages/events/EventsSearchLab";
-import SubmitReportLab from "./pages/user/SubmitReportLab";
 
 function App() {
 
@@ -35,24 +33,25 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/events' element={<Events />} />
           <Route path='/events/:id' element={<EventDetails />} />
-          <Route path='/events/create' element={<CreateEventsPage />} />
           <Route path='/events/eventdetails' element={<EventDetails />} />
 
-          {/* Lab Pages
-          <Route path='/events/search-lab' element={<EventsSearchLab />} />
-          <Route path='/user/submit-report-lab' element={<SubmitReportLab />} /> */}
-
-          {/* Admin Pages (TEMPORARY — remove AdminRoute for UI testing) */}
-          <Route path='/admin/dashboard' element={<AdminDashboard />} />
-          <Route path='/admin/reports' element={<AdminReports />} />
-          <Route path='/admin/reportdetails' element={<AdminReportDetails />} />
-          <Route path='/admin/user' element={<AdminActiveUsers />} />
-          <Route path='/admin/userdetails' element={<AdminUserDetails />} />
-          <Route path='/admin/settings' element={<AdminSettings />} />
+          {/* Admin Pages */}
+          <Route path='/admin/' element = {<AdminRoute />}>
+            <Route path='dashboard' element={<AdminDashboard />} />
+            <Route path='reports' element={<AdminReports />} />
+            <Route path='report/:id' element={<AdminReportDetails />} />
+            <Route path='user' element={<AdminActiveUsers />} />
+            <Route path='user/:id' element={<AdminUserDetails />} />
+            <Route path='settings' element={<AdminSettings />} />
+          </Route>
 
           {/* User Pages */}
-          <Route path="/user/dashboard" element={<UserDashboard />} />
-          <Route path="/user/settings" element={<UserSettings />} />
+          <Route path='/user/' element={<PrivateRoute />}>
+            <Route path='events/create' element={<CreateEventsPage />} />
+            <Route path="dashboard" element={<UserDashboard />} />
+            <Route path="settings" element={<UserSettings />} />
+            <Route path="my-events" element={<UserEvents />} />
+          </Route>
 
         </Routes>
       </BrowserRouter>

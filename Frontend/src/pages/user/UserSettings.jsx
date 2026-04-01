@@ -1,4 +1,4 @@
-import UserNavbar from "../../components/NavBar/UserNavbar";
+import Navbar from "../../components/NavBar/Navbar";
 import { useAuth } from "./../../context/AuthContext"
 import { useNavigate } from "react-router";
 
@@ -15,7 +15,7 @@ const UserSettings = () => {
   return (
     <div className="min-h-screen bg-[#f3f3f3] p-6">
       <div className="mx-auto max-w-4xl">
-        <UserNavbar />
+        <Navbar />
 
         <div className="mt-8 rounded-xl bg-white p-8 shadow-sm">
           <h2 className="mb-6 text-2xl font-semibold text-gray-800">

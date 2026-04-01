@@ -1,5 +1,5 @@
-import UserNavbar from "../../components/NavBar/UserNavbar";
-import EventCard from "../../components/UserDashboard/EventCard";
+import Navbar from "../../components/NavBar/Navbar";
+import UserEventCard from "../../components/UserDashboard/UserEventCard";
 import { useAuth } from "../../context/AuthContext"
 
 const UserDashboard = () => {
@@ -13,21 +13,23 @@ const UserDashboard = () => {
 
   const myEvents = [
     { id: "e1", name: "Event Name", desc: "Event Description" },
+    { id: "e1", name: "Event Name", desc: "Event Description" },
   ];
 
   const pastEvents = [
     { id: "p1", name: "Event Name", desc: "Event Description" },
+    { id: "p1", name: "Event Name", desc: "Event Description" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#f3f3f3] p-6">
-      <div className="mx-auto max-w-6xl">
-        <UserNavbar />
+    <div className="min-h-screen bg-white">
+      <div className="">
+        <Navbar />
 
-        <h1 className="text-3xl m-6 my-10">Hi, {user.name}</h1>
 
-        <main className="mt-3">
-          
+        <main className="my-3 mx-20">
+
+          <h1 className="text-3xl m-6 my-10">Hi, {user.name}</h1>
 
           {/* My Tickets */}
           <section className="mb-8 rounded-xl bg-gray-100 p-5 shadow-sm">
@@ -37,7 +39,7 @@ const UserDashboard = () => {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {myTickets.map((event) => (
-                <EventCard key={event.id} event={event} />
+                <UserEventCard key={event.id} event={event} />
               ))}
             </div>
           </section>
@@ -51,7 +53,7 @@ const UserDashboard = () => {
 
               <div className="space-y-4">
                 {myEvents.map((event) => (
-                  <EventCard key={event.id} event={event} />
+                  <UserEventCard key={event.id} event={event} />
                 ))}
               </div>
             </section>
@@ -64,7 +66,7 @@ const UserDashboard = () => {
 
               <div className="space-y-4">
                 {pastEvents.map((event) => (
-                  <EventCard key={event.id} event={event} />
+                  <UserEventCard key={event.id} event={event} />
                 ))}
               </div>
             </section>

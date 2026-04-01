@@ -1,9 +1,9 @@
-import AdminNavBar from "../../components/NavBar/AdminNavbar"
+import Navbar from "../../components/NavBar/Navbar"
 
 const AdminDashboard = () => {
   return (
     <div>
-      <AdminNavBar />
+      <Navbar />
       <h1 className="text-3xl font-bold mt-10 ml-6 mb-5">Welcome to the Admin Dashboard</h1>
       <div className = "flex-col">
         <div className = "flex ml-1">

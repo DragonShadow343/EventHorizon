@@ -1,5 +1,5 @@
 import React from 'react'
-import UserNavbar from '../../components/NavBar/UserNavbar'
+import Navbar from '../../components/NavBar/Navbar'
 
 const SectionCard = ({ title, tall = false }) => {
   return (
@@ -30,7 +30,7 @@ const SectionCard = ({ title, tall = false }) => {
 const CreateEventsPage = () => {
   return (
     <>
-      <UserNavbar />
+      <Navbar />
 
       <div className="min-h-screen bg-[#f8fafc] px-6 py-8 md:px-10">
         <div className="mx-auto max-w-7xl">

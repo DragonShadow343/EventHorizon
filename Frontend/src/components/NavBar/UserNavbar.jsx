@@ -7,7 +7,7 @@ const navLinkClass = ({ isActive }) =>
 
 const UserNavbar = () => {
   return (
-    <nav className="flex w-full items-center justify-between rounded-2xl border border-gray-200 bg-white px-8 py-5 shadow-sm">
+    <nav className="flex w-full items-center justify-between border border-gray-200 bg-white px-16 py-5 shadow-sm">
       <NavLink to="/user/dashboard">
         <h1 className="text-2xl font-semibold text-gray-900">
           EventHorizon
@@ -25,7 +25,7 @@ const UserNavbar = () => {
           My Events
         </NavLink>
         <NavLink to="/user/settings" className={navLinkClass}>
-          Settings
+          My Account
         </NavLink>
       </div>
     </nav>

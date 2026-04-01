@@ -1,35 +1,11 @@
 import React from "react";
+import Navbar from "../../components/NavBar/Navbar";
 
 const AdminSettings = () => {
   return (
     <div className="min-h-screen bg-[#F5F5F5] text-black">
       {/* Top Navigation */}
-      <header className="border-b border-black/10 bg-white/70 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
-          <h1 className="text-3xl font-medium tracking-tight">EventHorizon</h1>
-
-          <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
-            <a href="#" className="transition hover:text-[#5A9BEF]">
-              Dashboard
-            </a>
-            <a href="#" className="transition hover:text-[#5A9BEF]">
-              Active Users
-            </a>
-            <a href="#" className="transition hover:text-[#5A9BEF]">
-              Reports
-            </a>
-            <a href="#" className="transition hover:text-[#5A9BEF]">
-              Create Event
-            </a>
-            <a href="#" className="transition hover:text-[#5A9BEF]">
-              My Events
-            </a>
-            <a href="#" className="text-[#5A9BEF]">
-              Settings
-            </a>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className="mx-auto max-w-6xl px-6 py-10 lg:px-10">

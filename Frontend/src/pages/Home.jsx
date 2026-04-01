@@ -1,11 +1,11 @@
 import React from 'react'
-import LandingNavBar from './../components/NavBar/LandingNavBar'
+import Navbar from './../components/NavBar/Navbar.jsx'
 import {NavLink} from 'react-router-dom'
 
 const Home = () => {
   return (
     <>
-        <LandingNavBar className={""}/>
+      <Navbar className={""}/>
 
       <div className='flex mx-auto w-fit gap-x-4'>
         <div className='p-10 w-fit'>

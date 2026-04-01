@@ -1,0 +1,28 @@
+const UserEventCard = ({ event }) => {
+  return (
+    <div className="relative flex rounded-xl bg-white shadow-sm overflow-clip">
+      <div className="relative w-1/2 h-50">
+        {/* Image */}
+        <div className="w-full h-full bg-gray-200" />
+
+        <div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-tr from-[#364153] from-0% to-90% to-[#FFFFFF00]">
+            <h3 className="absolute bottom-6 left-6 text-2xl font-semibold text-white h-fit w-fit">
+              {event?.name || "Event Name"}
+            </h3>
+        </div>
+      </div>
+
+      <div className="w-1/2 h-full p-4 bg-white flex flex-col justify-between">
+        <p className="text-sm text-gray-500">
+          {event?.desc || "Event Description unavailable"}
+        </p>
+        <div className="flex items-center text-blue-500 border w-fit ">
+          <span className="text-sm font-medium">More info</span>
+          <span className="">→</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserEventCard;
