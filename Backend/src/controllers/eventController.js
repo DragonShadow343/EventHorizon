@@ -74,7 +74,7 @@ export async function editMyEvent(req, res) {
         if (date) event.date = date;
         if (time) event.time = time;
         if (location) event.location = location;
-        if (capacity > 0) event.capacity = capacity;
+        if (capacity !== undefined) event.capacity = capacity;
 
         // If a new image is uploaded, replace the old one
         if (req.file) {
