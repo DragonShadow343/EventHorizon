@@ -77,11 +77,11 @@ const EventPage = () => {
         {/* Banner with Title Overlay */}
         <div className="relative w-full h-88 rounded-lg overflow-hidden">
           <img
-            src={event.imageUrl || '/placeholder-event.jpg'}
+            src={`http://localhost:4000/uploads/${event.photos?.[0]}`}
             alt={event.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-blue-500 bg-opacity-40 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 bg-opacity-40 flex items-center justify-center">
             <h1 className="text-4xl sm:text-5xl font-bold text-white text-center px-4">
               {event.title}
             </h1>

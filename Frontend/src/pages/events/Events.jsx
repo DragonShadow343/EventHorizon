@@ -54,7 +54,8 @@ const Events = () => {
                 name: event.title,
                 desc: event.description,
                 date: event.date,
-                location: event.location
+                location: event.location,
+                imageURL: `http://localhost:4000/uploads/${event.photos?.[0]}`
               }}
               onClick={() => navigate(`/events/${event._id}`)}
             />

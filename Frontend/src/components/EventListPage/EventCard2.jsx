@@ -3,7 +3,7 @@ const EventCard2 = ({ event, onClick }) => {
         <div onClick={onClick} className="flex bg-white rounded-lg shadow border border-gray-100 p-4 w-full h-40 cursor-pointer">
             {/* image placeholder */}
             <div className="relative w-1/4">
-                <div className="bg-gray-200 h-full" />
+                <img src={event.imageURL} alt={event.name} className="h-full w-80 rounded" />
                 <div className="absolute inset-0 flex items-center justify-start">
                 </div>
             </div>

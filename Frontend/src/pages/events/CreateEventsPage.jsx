@@ -6,7 +6,7 @@ import { createEvent, getEventByID, editMyEvent } from '../../api/events'
 const EventPreview = ({ data, onRemoveImage }) => {
   return (
     <div className="p-5 border rounded-2xl bg-white shadow-sm">
-      {data.image || data.existingImage && (
+      {(data.image || data.existingImage) && (
         <div className="relative mb-4">
           <img
             src={
@@ -61,7 +61,7 @@ const CreateEventsPage = () => {
         setEventData({
           title: event.title || '',
           description: event.description ||'',
-          date: event.date ? event.date.split('T') : '',
+          date: event.date ? event.date.split('T')[0] : '',
           time: event.time || '',
           location: event.location || '',
           image: null,
