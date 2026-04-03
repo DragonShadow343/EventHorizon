@@ -16,6 +16,7 @@ import {
     getTrendingEvents,
     searchEvents
 } from "../controllers/eventController.js";
+import {upload} from "../middleware/multer.js"
 
 const router = express.Router();
 
@@ -23,11 +24,11 @@ router.get("/", getAllEvents);
 router.get("/upcoming", getUpcomingEvents);
 router.get("/trending", getTrendingEvents);
 
-router.post("/", authMiddleware, createEvent);
+router.post("/", authMiddleware, upload.single("image"), createEvent);
 router.get("/search", searchEvents)
 router.get("/:id", getEventById);
 router.delete("/:id", authMiddleware, requireEventOwner, deleteMyEvent);
-router.put("/:id", authMiddleware, requireEventOwner, editMyEvent);
+router.put("/:id", authMiddleware, requireEventOwner, upload.single("image"), editMyEvent);
 
 router.post("/:id/rsvp", authMiddleware, rsvpToEvent);
 router.delete("/:id/rsvp", authMiddleware, cancelRsvp);

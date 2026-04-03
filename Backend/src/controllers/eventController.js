@@ -1,4 +1,6 @@
 import Event from "../models/Event.js";
+import fs from "fs";
+import path from "path";
 
 export async function getAllEvents(req, res) {
     const events = await Event.find();
@@ -36,44 +38,95 @@ export async function deleteMyEvent(req, res) {
         return res.status(403).json({ error: "Not authorized" });
     }
 
+    // Delete associated uploaded images
+    if (event.photos && event.photos.length > 0) {
+        event.photos.forEach((filename) => {
+            const filePath = path.join("uploads", filename);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        });
+    }
+
     await Event.findByIdAndDelete(id);
 
     res.json({ message: "Event deleted", event });
 }
 
 export async function editMyEvent(req, res) {
-    const { id } = req.params;
+     try {
+        const { id } = req.params;
 
-    const event = await Event.findById(id);
+        const event = await Event.findById(id);
 
-    if (!event) {
-        return res.status(404).json({ error: "Event not found" });
+        if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        if (event.organizerId.toString() !== req.user.id) {
+            return res.status(403).json({ error: "Not authorized to edit this event" });
+        }
+
+        const { title, description, date, time, location, capacity } = req.body;
+
+        if (title) event.title = title;
+        if (description) event.description = description;
+        if (date) event.date = date;
+        if (time) event.time = time;
+        if (location) event.location = location;
+        if (capacity !== undefined) event.capacity = capacity;
+
+        // If a new image is uploaded, replace the old one
+        if (req.file) {
+            // delete old images
+            if (event.photos && event.photos.length > 0) {
+                event.photos.forEach((filename) => {
+                    const filePath = path.join("uploads", filename);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                });
+            }
+
+            event.photos = [req.file.filename];
+        }
+        await event.save();
+
+        res.status(200).json(event);
+    } catch (err) {
+        console.error("Updating event failed:", err);
+        res.status(500).json({ message: "Failed to update event" });
     }
-
-    if (event.organizerId.toString() !== req.user.id) {
-        return res.status(403).json({ error: "Not authorized to edit this event" });
-    }
-
-    Object.assign(event, req.body);
-    await event.save();
-
-    res.json(event);
 }
 
 export async function createEvent(req, res) {
+  try {
+    // req.body now has the text fields
+    const { title, description, date, time, location, capacity } = req.body || {};
+
+    if (!title || !description || !date || !time || !location || !capacity) {
+      return res.status(400).json({ message: 'Missing required event fields' });
+    }
+
     const newEvent = new Event({
-        title: req.body.title,
-        description: req.body.description,
-        date: req.body.date,
-        location: req.body.location,
-        capacity: req.body.capacity,
-        organizerId: req.user.id,
-        rsvp: [],
-        reviews: [],
+      title,
+      description,
+      date,
+      time,
+      location,
+      capacity,
+      organizerId: req.user.id,
+      photos: req.file ? [req.file.filename] : [],
+      rsvp: [],
+      reviews: [],
     });
 
     await newEvent.save();
     res.status(201).json(newEvent);
+  } catch (err) {
+    console.error("Create event failed:", err);
+    res.status(500).json({ message: "Failed to create event" });
+  }
 }
 
 export async function rsvpToEvent(req, res) {

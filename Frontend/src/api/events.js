@@ -10,17 +10,19 @@ export async function getEventByID(id) {
     return res.json();
 }
 
-export async function getEventsByOrganizer(userId) {
-    const res = await fetch(`${API}/${id}`);
+export async function getEventsByOrganizer(id) {
+    const res = await fetch(`${API}/organizer/${id}`);
     return res.json();
 }
 
 export async function createEvent(eventData) {
-    const res = await fetch(`${API}/createvent`, {
+    const res = await fetch(`${API}/`, {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
-        body: JSON.stringify(eventData),
+        body: eventData,
     });
     return res.json();
 }
@@ -52,18 +54,23 @@ export async function cancelRsvp(eventId) {
 }
 
 export async function deleteMyEvent(eventId) {
-    const res = await fetch(`${API}/deletevent/${eventId}`, {
+    const res = await fetch(`${API}/${eventId}`, {
         method: "DELETE",
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
     });
 }
 
 export async function editMyEvent(eventId, updatedEvent) {
-    const res = await fetch(`${API}/editmyevent/${eventId}`, {
+    const res = await fetch(`${API}/${eventId}`, {
         method: "PUT",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
-        body: JSON.stringify(updatedEvent),
+        body: updatedEvent,
     });
     return res.json();
 }
