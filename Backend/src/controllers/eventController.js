@@ -54,22 +54,49 @@ export async function deleteMyEvent(req, res) {
 }
 
 export async function editMyEvent(req, res) {
-    const { id } = req.params;
+     try {
+        const { id } = req.params;
 
-    const event = await Event.findById(id);
+        const event = await Event.findById(id);
 
-    if (!event) {
-        return res.status(404).json({ error: "Event not found" });
+        if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        if (event.organizerId.toString() !== req.user.id) {
+            return res.status(403).json({ error: "Not authorized to edit this event" });
+        }
+
+        const { title, description, date, time, location, capacity } = req.body;
+
+        if (title) event.title = title;
+        if (description) event.description = description;
+        if (date) event.date = date;
+        if (time) event.time = time;
+        if (location) event.location = location;
+        if (capacity > 0) event.capacity = capacity;
+
+        // If a new image is uploaded, replace the old one
+        if (req.file) {
+            // delete old images
+            if (event.photos && event.photos.length > 0) {
+                event.photos.forEach((filename) => {
+                    const filePath = path.join("uploads", filename);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                });
+            }
+
+            event.photos = [req.file.filename];
+        }
+        await event.save();
+
+        res.status(200).json(event);
+    } catch (err) {
+        console.error("Updating event failed:", err);
+        res.status(500).json({ message: "Failed to update event" });
     }
-
-    if (event.organizerId.toString() !== req.user.id) {
-        return res.status(403).json({ error: "Not authorized to edit this event" });
-    }
-
-    Object.assign(event, req.body);
-    await event.save();
-
-    res.json(event);
 }
 
 export async function createEvent(req, res) {

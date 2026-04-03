@@ -33,13 +33,19 @@ const EventPage = () => {
 
   const handleBlueButton = () => {
     if (isOwner) {
-      // navigate(`/events/edit/${id}`);
-      console.log("Edit event clicked");
+      handleEdit();
     } else {
-      // RSVP logic here later
-      console.log("RSVP clicked");
+      handleRSVP();
     }
   };
+
+  const handleEdit = () => {
+      navigate(`/user/events/${id}/edit`);
+  }
+
+  const handleRSVP = () => {
+      console.log("RSVP clicked");
+  }
 
   const handleRedButton = async () => {
     (isOwner)? handleDelete() : handleReport();

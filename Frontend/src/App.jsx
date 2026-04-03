@@ -48,6 +48,7 @@ function App() {
           {/* User Pages */}
           <Route path='/user/' element={<PrivateRoute />}>
             <Route path='events/create' element={<CreateEventsPage />} />
+            <Route path='events/:id/edit' element={<CreateEventsPage />} />
             <Route path="dashboard" element={<UserDashboard />} />
             <Route path="settings" element={<UserSettings />} />
             <Route path="my-events" element={<UserEvents />} />

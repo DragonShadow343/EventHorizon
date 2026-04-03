@@ -1,15 +1,19 @@
-import React, { useState, useRef } from 'react'
-import { useNavigate } from 'react-router'
+import React, { useState, useRef, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../../components/NavBar/Navbar'
-import { createEvent } from '../../api/events'
+import { createEvent, getEventByID, editMyEvent } from '../../api/events'
 
 const EventPreview = ({ data, onRemoveImage }) => {
   return (
     <div className="p-5 border rounded-2xl bg-white shadow-sm">
-      {data.image && (
+      {data.image || data.existingImage && (
         <div className="relative mb-4">
           <img
-            src={URL.createObjectURL(data.image)}
+            src={
+              data.image
+                ? URL.createObjectURL(data.image)
+                : `http://localhost:4000/uploads/${data.existingImage}`
+            }
             alt="Event Preview"
             className="w-full h-40 object-cover rounded-xl"
           />
@@ -41,10 +45,36 @@ const CreateEventsPage = () => {
     capacity: '',
   })
   const navigate = useNavigate();
+  const {id} = useParams();
+  const isEditMode = Boolean(id)
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [imageError, setImageError] = useState('')
-  const fileInputRef = useRef(null)
+  const [imageError, setImageError] = useState('');
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (!isEditMode) return;
+
+    const fetchEvent = async () => {
+      try{
+        const event = await getEventByID(id);
+        setEventData({
+          title: event.title || '',
+          description: event.description ||'',
+          date: event.date ? event.date.split('T') : '',
+          time: event.time || '',
+          location: event.location || '',
+          image: null,
+          existingImage: event.photos?.[0] || null,
+          capacity: event.capacity || '',
+        });
+
+      } catch (err) {
+        console.log('Failed to fetch event: ', err)
+      }
+    };
+    fetchEvent();
+  }, [id, isEditMode])
 
   const handleRemoveImage = () => {
     setEventData({ ...eventData, image: null })
@@ -64,10 +94,11 @@ const CreateEventsPage = () => {
     if (!time) missingFields.push('Time');
     if (!location) missingFields.push('Location');
     if (!capacity) missingFields.push('Max Capacity');
-    if (!image) missingFields.push('Image');
+    if (!image && !isEditMode) missingFields.push('Image');
 
     if (missingFields.length > 0) {
       alert(`Please fill out the following required fields: ${missingFields.join(', ')}`);
+      setIsSubmitting(false);
       return;
     }
 
@@ -79,10 +110,10 @@ const CreateEventsPage = () => {
       formData.append('time', time);
       formData.append('location', location);
       formData.append('capacity', Number(capacity));
-      formData.append('image', image);
+      if (image) formData.append('image', image);
 
-      const createdEvent = await createEvent(formData); // send FormData to API
-      navigate(`/events/${createdEvent._id}`)
+      const response = isEditMode ? await editMyEvent(id, formData) : await createEvent(formData); // send FormData to API
+      navigate(`/events/${response._id}`)
     } catch (err) {
       console.error('Failed to create event:', err);
     } finally {
@@ -103,8 +134,14 @@ const CreateEventsPage = () => {
           <div className="w-full">
             {/* Header */}
             <div className="mb-8">
-              <h1 className="mt-2 text-4xl font-semibold text-blue-500">Build your event page</h1>
-              <p className="mt-3 text-gray-500">Add details for your event. You can edit everything later.</p>
+              <h1 className="mt-2 text-4xl font-semibold text-blue-500">
+                {isEditMode ? "Edit your event" : "Build your event page"}
+              </h1>
+              <p className="mt-3 text-gray-500">
+                {isEditMode
+                  ? "Update your event details."
+                  : "Add details for your event. You can edit everything later."}
+              </p>
             </div>
 
             <div className="grid grid-cols-3 gap-8">
@@ -206,7 +243,10 @@ const CreateEventsPage = () => {
                   onClick={handleSave}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting? "Creating..." : "Save Event"}
+                  {isSubmitting
+                    ? isEditMode ? "Updating..." : "Creating..."
+                    : isEditMode ? "Update Event" : "Save Event"
+                  }
                 </button>
               </div>
 

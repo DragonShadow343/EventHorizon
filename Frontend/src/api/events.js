@@ -10,8 +10,8 @@ export async function getEventByID(id) {
     return res.json();
 }
 
-export async function getEventsByOrganizer(userId) {
-    const res = await fetch(`${API}/${id}`);
+export async function getEventsByOrganizer(id) {
+    const res = await fetch(`${API}/organizer/${id}`);
     return res.json();
 }
 
@@ -64,11 +64,13 @@ export async function deleteMyEvent(eventId) {
 }
 
 export async function editMyEvent(eventId, updatedEvent) {
-    const res = await fetch(`${API}/editmyevent/${eventId}`, {
+    const res = await fetch(`${API}/${eventId}`, {
         method: "PUT",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
-        body: JSON.stringify(updatedEvent),
+        body: updatedEvent,
     });
     return res.json();
 }
