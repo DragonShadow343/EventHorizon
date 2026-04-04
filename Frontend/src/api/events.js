@@ -40,6 +40,9 @@ export async function submitEventReview(newReview) {
 export async function rsvpToEvent(eventId) {
     const res = await fetch(`${API}/${eventId}/rsvp`, {
         method: "POST",
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
     });
     return res.json();
@@ -48,6 +51,9 @@ export async function rsvpToEvent(eventId) {
 export async function cancelRsvp(eventId) {
     const res = await fetch(`${API}/${eventId}/rsvp`, {
         method: "DELETE",
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
     });
     return res.json();
