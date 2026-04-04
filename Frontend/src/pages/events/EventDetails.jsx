@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getEventByID, deleteMyEvent, rsvpToEvent } from '../../api/events';
+import { getEventByID, deleteMyEvent, rsvpToEvent, cancelRsvp } from '../../api/events';
 import { getUserByID } from '../../api/user';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/NavBar/Navbar';
@@ -13,6 +13,7 @@ const EventPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isRSVPing, setIsRSVPing] = useState(false);
+  const [isRSVPed, setIsRSVPed] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -24,6 +25,10 @@ const EventPage = () => {
         setOrganizerName(userData.name);
         const eventOwner = user && user.id === organizerId;
         setIsOwner(eventOwner);
+        if (user && data.rsvp) {
+          const alreadyRSVPed = data.rsvp.includes(user.id);
+          setIsRSVPed(alreadyRSVPed);
+        }
       } catch (err) {
         console.error('Error fetching event:', err);
       }
@@ -46,8 +51,19 @@ const EventPage = () => {
 
   const handleRSVP = async () => {
     setIsRSVPing(true);
-    await rsvpToEvent(id);
-    setIsRSVPing(false);
+    try {
+      if (isRSVPed) {
+        await cancelRsvp(id);
+        setIsRSVPed(false);
+      } else {
+        await rsvpToEvent(id);
+        setIsRSVPed(true);
+      }
+    } catch (err) {
+      console.error("RSVP action failed:", err);
+    } finally {
+      setIsRSVPing(false);
+    }
   }
 
   const handleRedButton = async () => {
@@ -129,8 +145,12 @@ const EventPage = () => {
               <div className="grid grid-cols-2 grid-rows-2 gap-2">
                 <button onClick={handleBlueButton} disabled={isRSVPing} className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">
                   {isOwner
-                    ? "Edit Event" 
-                    : isRSVPing ? "Sending RSVP..." : "RSVP"
+                    ? "Edit Event"
+                    : isRSVPing
+                      ? "Processing..."
+                      : isRSVPed
+                        ? "Cancel RSVP"
+                        : "RSVP"
                   }
                 </button>
                 <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">Share</button>
