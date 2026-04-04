@@ -40,6 +40,9 @@ export async function submitEventReview(newReview) {
 export async function rsvpToEvent(eventId) {
     const res = await fetch(`${API}/${eventId}/rsvp`, {
         method: "POST",
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         credentials: "include",
     });
     return res.json();
