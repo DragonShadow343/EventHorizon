@@ -1,9 +1,69 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getEventByID, deleteMyEvent } from '../../api/events';
+import { getEventByID, deleteMyEvent, rsvpToEvent, cancelRsvp } from '../../api/events';
 import { getUserByID } from '../../api/user';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/NavBar/Navbar';
+
+const AttendeeList = ({ attendees, onClose, capacity }) => {
+  return (
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-lg w-3/4 h-3/4 p-6 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-4 text-3xl cursor-pointer text-gray-500 hover:text-gray-800"
+        >
+          ✕
+        </button>
+
+        <h2 className="text-xl font-semibold">Attendees <span className='text-sm ml-4 font-mono text-gray-400'>{attendees.length}/{capacity}</span></h2>
+
+        {attendees && attendees.length > 0 ? (
+          <ul className="space-y-2 mt-6 overflow-y-auto h-[calc(100%-50px)] overflow-scroll">
+            {attendees.map((id, index) => (
+              <AttendeeBar attendee={id} key={index} />
+            ))}
+          </ul>
+        ) : (
+          <p className="flex justify-center items-center text-gray-500 h-[calc(100%-26px)]">No attendees yet</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const AttendeeBar = ({attendee}) => {
+
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getUserByID(attendee);
+        setUserData(data);
+      } catch (err) {
+        console.error("Failed to fetch attendee:", err);
+      }
+    };
+
+    if (attendee) fetchUser();
+  }, [attendee]);
+
+  if (!userData) {
+    return (
+      <li className="p-2 border rounded text-gray-400">
+        Loading...
+      </li>
+    );
+  }
+
+  return (
+    <li className="p-3 bg-gray-100 rounded flex items-center ">
+      <span className="font-semibold text-gray-800">{userData.name}</span>
+      <span className="text-sm ml-10 text-gray-500">{userData.email}</span>
+    </li>
+  );
+}
 
 const EventPage = () => {
   const { id } = useParams();
@@ -12,6 +72,10 @@ const EventPage = () => {
   const [isOwner, setIsOwner] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isRSVPing, setIsRSVPing] = useState(false);
+  const [isRSVPed, setIsRSVPed] = useState(false);
+  const [eventPassed, setEventPassed] = useState(true);
+  const [showAttendees, setShowAttendees] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -23,6 +87,10 @@ const EventPage = () => {
         setOrganizerName(userData.name);
         const eventOwner = user && user.id === organizerId;
         setIsOwner(eventOwner);
+        if (user && data.rsvp) {
+          const alreadyRSVPed = data.rsvp.includes(user.id);
+          setIsRSVPed(alreadyRSVPed);
+        }
       } catch (err) {
         console.error('Error fetching event:', err);
       }
@@ -31,7 +99,7 @@ const EventPage = () => {
     fetchEvent();
   }, [id, user]);
 
-  const handleBlueButton = () => {
+  const handleBlueButton = async () => {
     if (isOwner) {
       handleEdit();
     } else {
@@ -43,8 +111,21 @@ const EventPage = () => {
       navigate(`/user/events/${id}/edit`);
   }
 
-  const handleRSVP = () => {
-      console.log("RSVP clicked");
+  const handleRSVP = async () => {
+    setIsRSVPing(true);
+    try {
+      if (isRSVPed) {
+        await cancelRsvp(id);
+        setIsRSVPed(false);
+      } else {
+        await rsvpToEvent(id);
+        setIsRSVPed(true);
+      }
+    } catch (err) {
+      console.error("RSVP action failed:", err);
+    } finally {
+      setIsRSVPing(false);
+    }
   }
 
   const handleRedButton = async () => {
@@ -67,6 +148,19 @@ const EventPage = () => {
     console.log("Report button clicked");
   }
 
+  const handleYellowButton = async () => {
+    isOwner ? handleAttendeeList() : handleReviewButton();
+  }
+
+  const handleAttendeeList = async () => {
+    if (!isOwner) return;
+    setShowAttendees(true);
+  }
+  
+  const handleReviewButton = async () => {
+    if (isOwner) return;
+    console.log("Clicked Review Button");
+  }
 
   if (!event) return <div>Loading...</div>;
 
@@ -124,14 +218,31 @@ const EventPage = () => {
               <p className="text-gray-600">Location: <span className="text-gray-800">{event.location}</span></p>
 
               <div className="grid grid-cols-2 grid-rows-2 gap-2">
-                <button onClick={handleBlueButton} className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">{isOwner? "Edit Event" : "RSVP"}</button>
+                <button onClick={handleBlueButton} disabled={isRSVPing} className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">
+                  {isOwner
+                    ? "Edit Event"
+                    : isRSVPing
+                      ? "Processing..."
+                      : isRSVPed
+                        ? "Cancel RSVP"
+                        : "RSVP"
+                  }
+                </button>
                 <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">Share</button>
                 <button onClick={handleRedButton} className="bg-red-400 hover:bg-red-500 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">{isOwner? "Delete Event" : "Report"}</button>
+                <button onClick={handleYellowButton} className={`col-span-2 bg-amber-100 hover:bg-amber-200 text-amber-500 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer`}>{isOwner ? "Show Attendee List" : eventPassed ? "Review Event" : ""}</button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {showAttendees && (
+        <AttendeeList
+          attendees={event.rsvp}
+          onClose={() => setShowAttendees(false)}
+          capacity={event.capacity}
+        />
+      )}
     </>
   );
 };
