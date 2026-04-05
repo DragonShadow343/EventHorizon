@@ -1,6 +1,6 @@
-const UserEventCard = ({ event }) => {
+const UserEventCard = ({ event, onClick }) => {
   return (
-    <div className="relative flex rounded-xl bg-white shadow-sm overflow-clip">
+    <div onClick={onClick} className="relative flex rounded-xl bg-white shadow-sm overflow-clip cursor-pointer">
       <div className="relative w-1/2 h-50">
         {/* Image */}
         <div className="w-full h-full bg-gray-200" />
@@ -21,9 +21,8 @@ const UserEventCard = ({ event }) => {
         <p className="text-sm text-gray-500">
           {event.description || "Event Description unavailable"}
         </p>
-        <div className="flex items-center text-blue-500 border w-fit ">
-          <span className="text-sm font-medium">More info</span>
-          <span className="">→</span>
+        <div className="flex items-center text-blue-500 w-fit ">
+          <span className="text-sm font-medium">More info →</span>
         </div>
       </div>
     </div>

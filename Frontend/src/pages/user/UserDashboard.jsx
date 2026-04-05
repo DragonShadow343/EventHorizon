@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/NavBar/Navbar";
 import UserEventCard from "../../components/UserDashboard/UserEventCard";
 import { getMyEvents, getMyRsvps, getMyPastRsvps } from "../../api/user";
@@ -10,6 +11,7 @@ const UserDashboard = () => {
   const [myEvents, setMyEvents] = useState([]);
   const [pastEvents, setPastEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,32 +63,38 @@ const UserDashboard = () => {
           <p className="text-gray-500">Loading your events...</p>
         ) : (
           <>
-            {/* My Tickets */}
-            <section className="mb-8 rounded-xl bg-gray-100 p-5 shadow-sm">
-              <h2 className="mb-4 text-lg font-semibold text-gray-700">
-                My Tickets
-              </h2>
-              {myTickets.length > 0 ? (
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {myTickets.map(event => (
-                    <UserEventCard key={`ticket-${event._id}`} event={event} />
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500">You have no tickets.</p>
-              )}
-            </section>
+            <div className="grid grid-cols-2 gap-6">
+              {/* My Tickets */}
+              <section className="col-span-2 relative mb-8 rounded-xl bg-gray-100 p-5 shadow-sm">
+                <h2 className="mb-4 text-lg font-semibold text-gray-700">
+                  My Tickets
+                </h2>
+                {myTickets.length > 2 ? (
+                    <p className="absolute top-5 right-6 text-blue-500">More RSVPs →</p>
+                  ) : (<></>)}
+                {myTickets.length > 0 ? (
+                  <div className="grid grid-cols-2 grid-rows-1 gap-6">
+                    {myTickets.slice(0,2).map(event => (
+                      <UserEventCard key={`ticket-${event._id}`} event={event} onClick={() => navigate(`/events/${event._id}`)} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">You have no tickets.</p>
+                )}
+              </section>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* My Events */}
-              <section className="rounded-xl bg-gray-100 p-5 shadow-sm">
+              <section className="relative rounded-xl bg-gray-100 p-5 shadow-sm">
                 <h2 className="mb-4 text-lg font-semibold text-gray-700">
                   My Events
                 </h2>
+                {myEvents.length > 2 ? (
+                  <p className="absolute top-5 right-6 text-blue-500">More Events →</p>
+                ) : (<></>)}
                 {myEvents.length > 0 ? (
-                  <div className="space-y-4">
-                    {myEvents.map(event => (
-                      <UserEventCard key={`myEvent-${event._id}`} event={event} />
+                  <div className="grid grid-cols-1 grid-rows-2 gap-6">
+                    {myEvents.slice(0,2).map(event => (
+                      <UserEventCard key={`myEvent-${event._id}`} event={event} onClick={() => navigate(`/events/${event._id}`)} />
                     ))}
                   </div>
                 ) : (
@@ -95,14 +103,17 @@ const UserDashboard = () => {
               </section>
 
               {/* Past Events */}
-              <section className="rounded-xl bg-gray-100 p-5 shadow-sm">
+              <section className="relative rounded-xl bg-gray-100 p-5 shadow-sm">
                 <h2 className="mb-4 text-lg font-semibold text-gray-700">
                   Past Events
                 </h2>
+                {pastEvents.length >= 2 ? (
+                  <p className="absolute top-5 right-6 text-blue-500">More Past Events →</p>
+                ) : (<></>)}
                 {pastEvents.length > 0 ? (
-                  <div className="space-y-4">
-                    {pastEvents.map(event => (
-                      <UserEventCard key={`past-{event.id}`} event={event} />
+                  <div className="grid grid-cols-1 grid-rows-2 gap-6">
+                    {pastEvents.slice(0,2).map(event => (
+                      <UserEventCard key={`past-{event.id}`} event={event} onClick={() => navigate(`/events/${event._id}`)} />
                     ))}
                   </div>
                 ) : (
