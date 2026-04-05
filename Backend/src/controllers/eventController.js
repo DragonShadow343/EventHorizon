@@ -168,30 +168,41 @@ export async function cancelRsvp(req, res) {
 }
 
 export async function submitEventReview(req, res) {
-    const { id } = req.params;
+    const { id: eventId } = req.params;
+    const userId = req.user.id;
+    const {rating, comment, userName} = req.body;
 
-    const event = await Event.findById(id);
+    if (!eventId) return res.status(400).json({error: "Event ID is required"});
+
+    const event = await Event.findById(eventId);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
     }
 
-    const alreadyReviewed = event.reviews.find(r => r.userId.toString() === req.user.id);
+    const hasRSVPd = event.rsvp.some(id => id.toString() === userId);
+
+    if (!hasRSVPd) {
+        return res.status(403).json({ error: "You must attend the event to review it" });
+    }
+
+    const alreadyReviewed = event.reviews.find(r => r.userId.toString() === userId);
     if (alreadyReviewed) {
         return res.status(400).json({ error: "User has already submitted a review" });
     }
 
     const review = {
-        userId: req.user.id,
-        rating: req.body.rating,
-        comment: req.body.comment,
+        userId,
+        userName,
+        rating,
+        comment,
         date: new Date()
     };
 
     event.reviews.push(review);
     await event.save();
 
-    res.json({ message: "Review submitted", review });
+    res.status(201).json({ message: "Review submitted", review });
 }
 
 export async function getUpcomingEvents(req, res) {
@@ -258,34 +269,4 @@ export async function createReport(req, res) {
     await event.save();
 
     res.status(201).json(newReport);
-}
-
-export async function createReview(req, res) {
-    const eventId = req.params.id;
-    const userId = req.user.id;
-    const { rating, comment } = req.body;
-
-    const event = await Event.findById(eventId);
-
-    if (!event) {
-        return res.status(404).json({ error: "Event not found" });
-    }
-
-    const hasRSVPd = event.rsvp.some(id => id.toString() === userId);
-
-    if (!hasRSVPd) {
-        return res.status(403).json({ error: "You must attend the event to review it" });
-    }
-
-    const newReview = {
-        userId,
-        rating,
-        comment,
-        createdAt: new Date()
-    };
-
-    event.reviews.push(newReview);
-    await event.save();
-
-    res.status(201).json(newReview);
 }

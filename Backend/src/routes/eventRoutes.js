@@ -5,7 +5,6 @@ import {
     getAllEvents,
     createEvent,
     createReport,
-    createReview, 
     getEventById,
     rsvpToEvent,
     cancelRsvp,
@@ -33,8 +32,8 @@ router.put("/:id", authMiddleware, requireEventOwner, upload.single("image"), ed
 router.post("/:id/rsvp", authMiddleware, rsvpToEvent);
 router.delete("/:id/rsvp", authMiddleware, cancelRsvp);
 
-router.post("/report/:id", authMiddleware, createReport);
-router.post("/review/:id", authMiddleware, createReview);
+router.post("/:id/report", authMiddleware, createReport);
+router.post("/:id/review", authMiddleware, submitEventReview);
 
 router.post("/:id/reviews", authMiddleware, submitEventReview);
 

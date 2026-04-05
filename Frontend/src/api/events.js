@@ -31,7 +31,10 @@ export async function submitEventReview(newReview) {
     const res = await fetch(`${API}/submitreview`, {
         method: "POST", 
         credentials: "include",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+            "Content-Type": "application/json",
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         body: JSON.stringify(newReview)
     });
     return res.json();
@@ -82,7 +85,7 @@ export async function editMyEvent(eventId, updatedEvent) {
 }
 
 export async function createReport(eventId, reportData) {
-    const res = await fetch(`${API}/report/${eventId}`, {
+    const res = await fetch(`${API}/${eventId}/report`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         credentials: "include",
@@ -92,9 +95,12 @@ export async function createReport(eventId, reportData) {
 }
 
 export async function createReview(eventId, reviewData) {
-    const res = await fetch(`${API}/review/${eventId}`, {
+    const res = await fetch(`${API}/${eventId}/review`, {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type":"application/json",
+        },
         credentials: "include",
         body: JSON.stringify(reviewData),
     })
