@@ -82,7 +82,7 @@ export async function editMyEvent(eventId, updatedEvent) {
 }
 
 export async function createReport(eventId, reportData) {
-    const res = await fetch(`${API}/report/${eventId}`, {
+    const res = await fetch(`${API}/${eventId}/report`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         credentials: "include",
@@ -92,9 +92,12 @@ export async function createReport(eventId, reportData) {
 }
 
 export async function createReview(eventId, reviewData) {
-    const res = await fetch(`${API}/review/${eventId}`, {
+    const res = await fetch(`${API}/${eventId}/review`, {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
+        headers: {
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type":"application/json",
+        },
         credentials: "include",
         body: JSON.stringify(reviewData),
     })

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getEventByID, deleteMyEvent, rsvpToEvent, cancelRsvp } from '../../api/events';
+import { getEventByID, deleteMyEvent, rsvpToEvent, cancelRsvp, createReview } from '../../api/events';
 import { getUserByID } from '../../api/user';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/NavBar/Navbar';
@@ -65,6 +65,73 @@ const AttendeeBar = ({attendee}) => {
   );
 }
 
+const ReviewModal = ({ onClose, eventId, onSubmitted }) => {
+  const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!comment.trim()) return;
+
+    setLoading(true);
+    try {
+      await createReview(eventId, { comment, rating });
+      setComment("");
+      onSubmitted && onSubmitted();
+      onClose();
+    } catch (err) {
+      console.error("Failed to submit review:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-lg w-3/4 max-w-2xl p-6 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-4 text-3xl cursor-pointer text-gray-500 hover:text-gray-800"
+        >
+          ✕
+        </button>
+
+        <h2 className="text-xl font-semibold mb-4">Leave a Review</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex gap-2">
+            {[1,2,3,4,5].map((star) => (
+              <button
+                type="button"
+                key={star}
+                onClick={() => setRating(star)}
+                className={`text-2xl ${star <= rating ? "text-yellow-400" : "text-gray-300"}`}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Write your review..."
+            className="w-full border rounded p-3 h-48 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded"
+          >
+            {loading ? "Submitting..." : "Submit Review"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 const EventPage = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
@@ -76,6 +143,7 @@ const EventPage = () => {
   const [isRSVPed, setIsRSVPed] = useState(false);
   const [eventPassed, setEventPassed] = useState(true);
   const [showAttendees, setShowAttendees] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -90,6 +158,8 @@ const EventPage = () => {
         if (user && data.rsvp) {
           const alreadyRSVPed = data.rsvp.includes(user.id);
           setIsRSVPed(alreadyRSVPed);
+          const hasPassed = new Date(data.date) < new Date();
+          setEventPassed(hasPassed);
         }
       } catch (err) {
         console.error('Error fetching event:', err);
@@ -158,8 +228,8 @@ const EventPage = () => {
   }
   
   const handleReviewButton = async () => {
-    if (isOwner) return;
-    console.log("Clicked Review Button");
+    if (isOwner || !user) return;
+    setShowReview(true);
   }
 
   if (!event) return <div>Loading...</div>;
@@ -219,18 +289,38 @@ const EventPage = () => {
 
               <div className="grid grid-cols-2 grid-rows-2 gap-2">
                 <button onClick={handleBlueButton} disabled={isRSVPing} className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">
-                  {isOwner
-                    ? "Edit Event"
-                    : isRSVPing
-                      ? "Processing..."
-                      : isRSVPed
-                        ? "Cancel RSVP"
-                        : "RSVP"
+                  {!user
+                    ? "Login to RSVP"
+                    : isOwner
+                      ? "Edit Event"
+                      : isRSVPing
+                        ? "Processing..."
+                        : isRSVPed
+                          ? "Cancel RSVP"
+                          : "RSVP"
                   }
                 </button>
                 <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">Share</button>
                 <button onClick={handleRedButton} className="bg-red-400 hover:bg-red-500 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">{isOwner? "Delete Event" : "Report"}</button>
-                <button onClick={handleYellowButton} className={`col-span-2 bg-amber-100 hover:bg-amber-200 text-amber-500 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer`}>{isOwner ? "Show Attendee List" : eventPassed ? "Review Event" : ""}</button>
+                <button
+                  onClick={handleYellowButton}
+                  disabled={!isOwner && (!eventPassed || !user)}
+                  className={`col-span-2 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer ${
+                    isOwner
+                      ? "bg-amber-100 hover:bg-amber-200 text-amber-500"
+                      : eventPassed && user
+                        ? "bg-amber-100 hover:bg-amber-200 text-amber-500"
+                        : "hidden"
+                  }`}
+                >
+                  {isOwner
+                    ? "Show Attendee List"
+                    : !user
+                      ? "Login to Review"
+                      : !eventPassed
+                        ? ""
+                        : "Review Event"}
+                </button>
               </div>
             </div>
           </div>
@@ -241,6 +331,16 @@ const EventPage = () => {
           attendees={event.rsvp}
           onClose={() => setShowAttendees(false)}
           capacity={event.capacity}
+        />
+      )}
+      {showReview && user && !isOwner && (
+        <ReviewModal
+          eventId={id}
+          onClose={() => setShowReview(false)}
+          onSubmitted={async () => {
+            const updated = await getEventByID(id);
+            setEvent(updated);
+          }}
         />
       )}
     </>
