@@ -69,6 +69,8 @@ const ReviewModal = ({ onClose, eventId, onSubmitted }) => {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const userName = user.name;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,7 +78,7 @@ const ReviewModal = ({ onClose, eventId, onSubmitted }) => {
 
     setLoading(true);
     try {
-      await createReview(eventId, { comment, rating });
+      await createReview(eventId, {userName, comment, rating });
       setComment("");
       onSubmitted && onSubmitted();
       onClose();
@@ -144,6 +146,7 @@ const EventPage = () => {
   const [eventPassed, setEventPassed] = useState(true);
   const [showAttendees, setShowAttendees] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -155,11 +158,22 @@ const EventPage = () => {
         setOrganizerName(userData.name);
         const eventOwner = user && user.id === organizerId;
         setIsOwner(eventOwner);
+
+        const hasPassed = new Date(data.date) < new Date();
+        setEventPassed(hasPassed);
+
         if (user && data.rsvp) {
-          const alreadyRSVPed = data.rsvp.includes(user.id);
+          const alreadyRSVPed = data.rsvp.some(id => id.toString() === user.id);
           setIsRSVPed(alreadyRSVPed);
-          const hasPassed = new Date(data.date) < new Date();
-          setEventPassed(hasPassed);
+        }
+
+        if (user && data.reviews) {
+          const reviewed = data.reviews.some(r => r.userId?.toString() === user.id);
+          setHasReviewed(reviewed);
+        }
+        if (user && data.rsvp) {
+          const hasRSVPedForReview = data.rsvp.some(id => id.toString() === user.id);
+          setIsRSVPed(hasRSVPedForReview);
         }
       } catch (err) {
         console.error('Error fetching event:', err);
@@ -270,6 +284,9 @@ const EventPage = () => {
                   {event.reviews.map((review) => (
                     <li key={review._id} className="border-b border-gray-200 pb-2">
                       <p className="font-medium">{review.userName}</p>
+                      <p className="text-yellow-400">
+                        {"★".repeat(review.rating || 0)}{"☆".repeat(5 - (review.rating || 0))}
+                      </p>
                       <p className="text-gray-600">{review.comment}</p>
                     </li>
                   ))}
@@ -280,7 +297,6 @@ const EventPage = () => {
             </div>
           </div>
 
-          {/* Right Column: Details + Actions */}
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow p-6 space-y-4">
               <p className="text-gray-600">Organizer Name: <span className="font-medium text-gray-800">{organizerName}</span></p>
@@ -304,22 +320,26 @@ const EventPage = () => {
                 <button onClick={handleRedButton} className="bg-red-400 hover:bg-red-500 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">{isOwner? "Delete Event" : "Report"}</button>
                 <button
                   onClick={handleYellowButton}
-                  disabled={!isOwner && (!eventPassed || !user)}
+                  disabled={!isOwner && (!eventPassed || !user || hasReviewed)}
                   className={`col-span-2 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer ${
                     isOwner
                       ? "bg-amber-100 hover:bg-amber-200 text-amber-500"
-                      : eventPassed && user
-                        ? "bg-amber-100 hover:bg-amber-200 text-amber-500"
-                        : "hidden"
+                      : (!eventPassed || !user || !isRSVPed)
+                        ? "hidden"
+                        : hasReviewed
+                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-amber-100 hover:bg-amber-200 text-amber-500"
                   }`}
                 >
                   {isOwner
                     ? "Show Attendee List"
                     : !user
                       ? "Login to Review"
-                      : !eventPassed
-                        ? ""
-                        : "Review Event"}
+                      : hasReviewed
+                        ? "Already Reviewed"
+                        : !eventPassed
+                          ? ""
+                          : "Review Event"}
                 </button>
               </div>
             </div>
@@ -340,6 +360,10 @@ const EventPage = () => {
           onSubmitted={async () => {
             const updated = await getEventByID(id);
             setEvent(updated);
+            if (user && updated.reviews) {
+              const reviewed = updated.reviews.some(r => r.userId?.toString() === user.id);
+              setHasReviewed(reviewed);
+            }
           }}
         />
       )}

@@ -31,7 +31,10 @@ export async function submitEventReview(newReview) {
     const res = await fetch(`${API}/submitreview`, {
         method: "POST", 
         credentials: "include",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+            "Content-Type": "application/json",
+            Authorization:  `Bearer ${localStorage.getItem("accessToken")}`
+        },
         body: JSON.stringify(newReview)
     });
     return res.json();

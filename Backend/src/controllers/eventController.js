@@ -168,18 +168,16 @@ export async function cancelRsvp(req, res) {
 }
 
 export async function submitEventReview(req, res) {
-    const { eventId } = req.params;
-    const { userId } = req.user.id;
+    const { id: eventId } = req.params;
+    const userId = req.user.id;
+    const {rating, comment, userName} = req.body;
+
+    if (!eventId) return res.status(400).json({error: "Event ID is required"});
 
     const event = await Event.findById(eventId);
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
-    }
-
-    const alreadyReviewed = event.reviews.find(r => r.userId.toString() === userId);
-    if (alreadyReviewed) {
-        return res.status(400).json({ error: "User has already submitted a review" });
     }
 
     const hasRSVPd = event.rsvp.some(id => id.toString() === userId);
@@ -188,10 +186,16 @@ export async function submitEventReview(req, res) {
         return res.status(403).json({ error: "You must attend the event to review it" });
     }
 
+    const alreadyReviewed = event.reviews.find(r => r.userId.toString() === userId);
+    if (alreadyReviewed) {
+        return res.status(400).json({ error: "User has already submitted a review" });
+    }
+
     const review = {
-        userId: userId,
-        rating: req.body.rating,
-        comment: req.body.comment,
+        userId,
+        userName,
+        rating,
+        comment,
         date: new Date()
     };
 
