@@ -21,27 +21,42 @@ export async function getUserByID(userId) {
 // TODO: Add endpoint to get just the name
 
 export async function getMyEvents() {
-    const res = await fetch(`${API}/events`, {credentials: "include"})
+    const res = await fetch(`${API}/events`, {
+        credentials: "include",
+        headers: {Authorization:  `Bearer ${localStorage.getItem("accessToken")}`,}
+    })
     return res.json();
 }
 
 export async function getMyRsvps() {
-    const res = await fetch(`${API}/rsvps`, {credentials: "include"})
+    const res = await fetch(`${API}/rsvps`, {
+        credentials: "include",
+        headers: {Authorization:  `Bearer ${localStorage.getItem("accessToken")}`,}
+    })
     return res.json();
 }
 
 export async function getMyPastEvents() {
-    const res = await fetch(`${API}/events/past`, {credentials: "include"})
+    const res = await fetch(`${API}/events/past`, {
+        credentials: "include",
+        headers: {Authorization:  `Bearer ${localStorage.getItem("accessToken")}`,}
+    })
     return res.json();
 }
 
 export async function getMyPastRsvps() {
-    const res = await fetch(`${API}/rsvps/past`, {credentials: "include"})
+    const res = await fetch(`${API}/rsvps/past`, {
+        credentials: "include",
+        headers: {Authorization:  `Bearer ${localStorage.getItem("accessToken")}`,}
+    })
     return res.json();
 }
 
 export async function getMyReviews() {
-    const res = await fetch(`${API}/reviews`, {credentials: "include"})
+    const res = await fetch(`${API}/reviews`, {
+        credentials: "include",
+        headers: {Authorization:  `Bearer ${localStorage.getItem("accessToken")}`,}
+    })
     return res.json();
 }
 
