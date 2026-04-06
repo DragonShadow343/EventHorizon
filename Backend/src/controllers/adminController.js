@@ -97,8 +97,8 @@ export async function deleteAnyEvent(req, res) {
 export async function getAllReports(req, res) {
   try {
     const reports = await Report.find()
-      .populate("reportedUser")
-      .populate("reportedEvent")
+      .populate("reportedBy")
+      .populate("eventId")
 
     res.status(200).json(reports)
 
@@ -113,8 +113,8 @@ export async function getReport(req, res) {
     const { id } = req.params
 
     const report = await Report.findById(id)
-      .populate("reportedUser")
-      .populate("reportedEvent")
+      .populate("reportedBy")
+      .populate("eventId")
 
     if (!report) {
       return res.status(404).json({ message: "Report not found" })
@@ -206,30 +206,47 @@ export async function getTotalReports(req, res) {
 
 export async function getMostActiveUsers(req, res) {
   try {
+    const users = await User.find().select("name email");
+    const events = await Event.find().select("organizerId");
 
-    const users = await User.find()
-      .sort({ eventsCreated: -1 })
-      .limit(5)
-      .select("name email eventsCreated")
+    const counts = {};
+    events.forEach(e => {
+      const id = e.organizerId?.toString();
+      if (!id) return;
+      counts[id] = (counts[id] || 0) + 1;
+    });
 
-    res.status(200).json(users)
+    const active = users
+      .map(u => ({
+        ...u.toObject(),
+        eventsCreated: counts[u._id.toString()] || 0
+      }))
+      .sort((a,b) => b.eventsCreated - a.eventsCreated)
+      .slice(0,4);
+
+    res.status(200).json(active);
 
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch active users", error })
+    res.status(500).json({ message: "Failed to fetch active users", error });
   }
 }
 
 
 export async function getMostPopularEvents(req, res) {
   try {
+    const events = await Event.find();
 
-    const events = await Event.find()
-      .sort({ attendeeCount: -1 })
-      .limit(5)
+    const popular = events
+      .map(e => ({
+        ...e.toObject(),
+        attendeeCount: e.rsvp?.length || 0
+      }))
+      .sort((a,b) => b.attendeeCount - a.attendeeCount)
+      .slice(0,4);
 
-    res.status(200).json(events)
+    res.status(200).json(popular);
 
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch popular events", error })
+    res.status(500).json({ message: "Failed to fetch popular events", error });
   }
 }
