@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/NavBar/Navbar";
 import { useAuth } from "./../../context/AuthContext";
 import { useNavigate } from "react-router";
+import { getCurrentUser } from "../../api/auth";
 
 const UserSettings = () => {
   const { user, logout, updateUser } = useAuth(); // assume updateUser exists
@@ -13,6 +14,31 @@ const UserSettings = () => {
     email: user?.email || "",
     profilePic: user?.avatar || "",
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
+
+    (async () => {
+      try {
+        const me = await getCurrentUser(token);
+        if (!me) return;
+        setFormData((prev) => ({
+          ...prev,
+          username: me.name ?? prev.username,
+          email: me.email ?? prev.email,
+          profilePic: me.avatar ?? prev.profilePic,
+        }));
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
+
+  const profilePicSrc =
+    formData.profilePic && typeof formData.profilePic === "string"
+      ? formData.profilePic
+      : undefined;
 
   const handleLogout = () => {
     logout();
@@ -67,7 +93,7 @@ const UserSettings = () => {
           {/* Profile Picture */}
           <div className="flex items-center gap-6">
             <img
-              src={formData.profilePic ? formData.profilePic : null}
+              src={profilePicSrc}
               alt="Profile"
               className="w-24 h-24 rounded-full object-cover"
             />
