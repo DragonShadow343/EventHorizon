@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getUser } from "../../api/admin";
+
 
 const AdminUserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,7 +36,15 @@ const AdminUserDetails = () => {
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-10 lg:px-10">
-        <h2 className="text-4xl font-medium tracking-tight mb-6">User Details</h2>
+        <div className="mb-6 flex items-center gap-4">
+    <button
+            onClick={() => navigate("/admin/user")}
+            className="flex h-10 w-28 items-center justify-center rounded-full border border-black/15 bg-white text-sm font-medium transition hover:border-[#5A9BEF] hover:text-[#5A9BEF]"
+          >
+            ← Back
+          </button>
+          <h2 className="text-4xl font-medium tracking-tight">User Details</h2>
+        </div>
 
         <div className="rounded-[32px] border border-black/10 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
           <div className="grid gap-10 lg:grid-cols-[240px_1fr]">
