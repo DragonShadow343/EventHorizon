@@ -52,6 +52,10 @@ const UserDashboard = () => {
     if (user?.id) fetchData();
   }, [user]);
 
+  useEffect(() => {
+    console.log(myEvents);
+  },[myEvents])
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />

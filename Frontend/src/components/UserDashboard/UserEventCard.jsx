@@ -3,7 +3,8 @@ const UserEventCard = ({ event, onClick }) => {
     <div onClick={onClick} className="relative flex rounded-xl bg-white shadow-sm overflow-clip cursor-pointer">
       <div className="relative w-1/2 h-50">
         {/* Image */}
-        <div className="w-full h-full bg-gray-200" />
+        {/* <div className="w-full h-full bg-gray-200" /> */}
+        <img src={`http://localhost:4000/uploads/${event.photos?.[0]}`} alt={event.name} className="w-full h-full" />
 
         <div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-tr from-[#364153] from-0% to-90% to-[#FFFFFF00]">
           <div className="absolute bottom-6 left-6">
