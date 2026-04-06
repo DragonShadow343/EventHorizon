@@ -29,6 +29,8 @@ export async function login(email, password) {
         throw new Error(data.error);
     }
 
+    localStorage.setItem("accessToken", data.accessToken);
+
     return data;
 }
 

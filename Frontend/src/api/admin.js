@@ -9,7 +9,12 @@ async function handleResponse(res) {
 }
 
 export async function getAllUsers() {
+  const token = localStorage.getItem("accessToken");
+  
   const res = await fetch(`${API}/users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     credentials: "include"
   });
   return handleResponse(res);
