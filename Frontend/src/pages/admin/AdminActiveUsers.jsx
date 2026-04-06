@@ -1,15 +1,23 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { getAllUsers } from "../../api/admin";
 import Navbar from "../../components/NavBar/Navbar";
 
-const users = [
-  { id: 1, name: "Olivia Carter", email: "olivia.carter@email.com" },
-  { id: 2, name: "James Anderson", email: "james.anderson@email.com" },
-  { id: 3, name: "Sophia Martinez", email: "sophia.martinez@email.com" },
-  { id: 4, name: "Noah Thompson", email: "noah.thompson@email.com" },
-  { id: 5, name: "Emma White", email: "emma.white@email.com" },
-];
 
 const AdminActiveUsers = () => {
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const data = await getAllUsers();
+        setUsers(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F5F5F5] text-black">
       {/* Top Navigation */}
@@ -43,7 +51,7 @@ const AdminActiveUsers = () => {
           <div className="space-y-4">
             {users.map((user) => (
               <div
-                key={user.id}
+                key={user._id}
                 className="rounded-2xl border border-black/10 bg-[#FAFAFA] px-5 py-5 shadow-sm transition hover:border-[#5A9BEF] hover:shadow-md"
               >
                 <div className="flex flex-col gap-4 sm:grid sm:grid-cols-[1.5fr_1fr] sm:items-center">
