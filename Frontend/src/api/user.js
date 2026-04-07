@@ -3,16 +3,14 @@ const API = "http://localhost:4000/users";
 // Login, register and currentUser are in api/auth.js
 
 export async function updateUserData(data) {
-    const isFormData = data instanceof FormData;
 
     const res = await fetch(`${API}/me`, {
         method: "PUT",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            ...(isFormData ? {} : { "Content-Type": "application/json" })
         },
         credentials: "include",
-        body: isFormData ? data : JSON.stringify(data),
+        body: data,
     });
 
     if (!res.ok) {
