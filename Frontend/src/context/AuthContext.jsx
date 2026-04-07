@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { login } from '../api/auth';
+import { updateUserData } from '../api/user';
 
 const AuthContext = createContext();
 
@@ -25,6 +26,21 @@ export function AuthContextProvider({ children }) {
         }
     }
 
+    async function updateUser(data) {
+        try {
+            const res = await updateUserData(data);
+
+            if (!res) return null;
+
+            // merge instead of overwrite to prevent losing auth fields
+            setUser((prev) => ({ ...prev, ...res }));
+
+            return res;
+        } catch (err) {
+            console.error('Update user error:', err);
+        }
+    }
+
     function logout() {
         setIsAuthenticated(false);
         setUser(null);
@@ -32,7 +48,7 @@ export function AuthContextProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, loginAs, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, loginAs, logout, updateUser }}>
             {children}
         </AuthContext.Provider>
     )

@@ -6,11 +6,26 @@ export async function updateUserData(req, res) {
   const user = await User.findById(req.user.id);
   if (!user) return res.status(404).json({ error: "User not found" });
 
+  console.log("BODY:", req.body);
+  console.log("FILE:", req.file);
+
+  // Handle text fields
+  user.name = req.body.username ?? user.name;
   user.email = req.body.email ?? user.email;
-  user.phone = req.body.phone ?? user.phone;
+
+  // Handle image upload (Multer)
+  if (req.file) {
+    const imageUrl = `http://localhost:4000/uploads/${req.file.filename}`;
+    user.avatar = imageUrl;
+  }
 
   await user.save();
-  res.json(user);
+
+  res.json({
+    username: user.name,
+    email: user.email,
+    avatar: user.avatar,
+  });
 }
 
 export async function updateUserPassword(req, res) {
