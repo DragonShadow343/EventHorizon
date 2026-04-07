@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getUser } from "../../api/admin";
+import { deleteUser, getUser } from "../../api/admin";
 
 
 const AdminUserDetails = () => {
@@ -8,17 +8,17 @@ const AdminUserDetails = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  const handleDelete = async () => {
+    await deleteUser(id);
+    navigate("/admin/user");
+  };
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const data = await getUser(id);
-        setUser(data);
-      } catch (err) {
-        setUser({ name: "Failed to load user", email: "", phone: "" });
-      } finally {
-        setLoading(false);
-      }
-    };
+    async function fetchUser() {
+      const data = await getUser(id);
+      setUser(data);
+      setLoading(false);
+    }
 
     fetchUser();
   }, [id]);
@@ -86,6 +86,11 @@ const AdminUserDetails = () => {
             </section>
           </div>
         </div>
+        <button 
+        onClick={handleDelete}
+        className="flex mt-6 ml-1 h-10 w-32 items-center justify-center rounded-full shadow-2xl border-red-600 bg-red-500 text-sm font-medium text-white transition hover:bg-red-600">
+          Delete User
+        </button>
       </main>
     </div>
   );
