@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "../../api/admin";
 import Navbar from "../../components/NavBar/Navbar";
 
 
 const AdminActiveUsers = () => {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -61,7 +63,10 @@ const AdminActiveUsers = () => {
                   </div>
 
                   <div className="flex justify-start sm:justify-end">
-                    <button className="inline-flex items-center gap-2 rounded-xl bg-[#5A9BEF] px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90">
+                    <button
+                      onClick={() => {
+                        navigate(`/admin/user/${user._id}`)}}
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#5A9BEF] px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90">
                       More Info
                       <span className="text-base">→</span>
                     </button>
