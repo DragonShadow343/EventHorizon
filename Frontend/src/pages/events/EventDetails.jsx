@@ -196,6 +196,11 @@ const EventPage = () => {
   }
 
   const handleRSVP = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
     setIsRSVPing(true);
     try {
       if (isRSVPed) {
@@ -304,7 +309,17 @@ const EventPage = () => {
               <p className="text-gray-600">Location: <span className="text-gray-800">{event.location}</span></p>
 
               <div className="grid grid-cols-2 grid-rows-2 gap-2">
-                <button onClick={handleBlueButton} disabled={isRSVPing} className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">
+                <button
+                  onClick={() => {
+                    if (!user) {
+                      navigate("/login");
+                      return;
+                    }
+                    handleBlueButton();
+                  }}
+                  disabled={isRSVPing}
+                  className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer"
+                >
                   {!user
                     ? "Login to RSVP"
                     : isOwner
