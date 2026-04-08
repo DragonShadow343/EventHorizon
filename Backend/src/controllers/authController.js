@@ -4,20 +4,38 @@ import User from "./../models/User.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/tokenUtils.js";
 
 export async function register(req, res) {
-    const {email, password, name} = req.body;
+  // Handle form-data fields
+  const { email, password, name } = req.body;
+  const file = req.file;
 
-    try {
-        const exists = await User.findOne({email});
-        if (exists) return res.status(409).json({error: "Email in use"});
+  if (!email || !password || !name) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
 
-        const passwordHash = await bcrypt.hash(password, 10);
-        const user = await User.create({email, passwordHash, name});
+  try {
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(409).json({ error: "Email in use" });
 
-        res.status(201).json({message:"Registered", userId: user._id});
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({error: err.message});
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const userData = {
+      email,
+      passwordHash,
+      name,
+    };
+
+    if (file) {
+      const imageUrl = `http://localhost:4000/uploads/${file.filename}`;
+      userData.avatar = imageUrl;
     }
+
+    const user = await User.create(userData);
+
+    res.status(201).json({ message: "Registered", userId: user._id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 }
 
 export async function login(req, res) {
