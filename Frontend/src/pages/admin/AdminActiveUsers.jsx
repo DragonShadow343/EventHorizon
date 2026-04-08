@@ -12,8 +12,8 @@ const AdminActiveUsers = () => {
       try {
         const data = await getAllUsers();
         setUsers(data);
-      } catch {
-        setUsers([]);
+      } catch (err) {
+        console.error(err);
       }
     };
 
