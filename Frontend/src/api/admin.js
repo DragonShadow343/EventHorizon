@@ -1,7 +1,7 @@
 const API = "http://localhost:4000/admin";
 
 function getAuthHeaders() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
@@ -14,7 +14,7 @@ async function handleResponse(res) {
 }
 
 export async function getAllUsers() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   
   const res = await fetch(`${API}/users`, {
     headers: { ...getAuthHeaders() },

@@ -13,48 +13,49 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const fetchData = async () => {
+    try {
+      const [rsvps, createdEvents, pastRsvps] = await Promise.all([
+        getMyRsvps(),
+        getMyEvents(),
+        getMyPastRsvps(),
+      ]);
+
+      const now = new Date();
+
+      // Filter upcoming RSVPs (tickets)
+      const upcomingTickets = rsvps
+        .filter(event => new Date(event.date) >= now)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      // Sort created events chronologically
+      const createdSorted = createdEvents.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+      
+      // Sort past RSVPs by latest first
+      const pastSorted = pastRsvps.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
+
+      setMyTickets(upcomingTickets);
+      setMyEvents(createdSorted);
+      setPastEvents(pastSorted);
+      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch user events:", err);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [rsvps, createdEvents, pastRsvps] = await Promise.all([
-          getMyRsvps(),
-          getMyEvents(),
-          getMyPastRsvps(),
-        ]);
-
-        const now = new Date();
-
-        // Filter upcoming RSVPs (tickets)
-        const upcomingTickets = rsvps
-          .filter(event => new Date(event.date) >= now)
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        // Sort created events chronologically
-        const createdSorted = createdEvents.sort(
-          (a, b) => new Date(a.date) - new Date(b.date)
-        );
-        
-        // Sort past RSVPs by latest first
-        const pastSorted = pastRsvps.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        );
-
-        setMyTickets(upcomingTickets);
-        setMyEvents(createdSorted);
-        setPastEvents(pastSorted);
-        setLoading(false);
-      } catch (err) {
-        console.error("Failed to fetch user events:", err);
-        setLoading(false);
-      }
-    };
 
     if (user?.id) fetchData();
-  }, [user]);
 
-  useEffect(() => {
-    console.log(myEvents);
-  },[myEvents])
+    const interval = setInterval(fetchData, 3000);
+    return () => clearInterval(interval);
+
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-white">

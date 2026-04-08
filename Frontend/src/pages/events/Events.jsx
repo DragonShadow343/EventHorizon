@@ -11,17 +11,21 @@ const Events = () => {
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
 
+  const fetchEvents = async () => {
+    try {
+      const data = await getAllEvents();
+      setEvents(data);
+    } catch (err) {
+      console.error('Error fetching events:', err);
+    }
+  };
+
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const data = await getAllEvents();
-        setEvents(data);
-      } catch (err) {
-        console.error('Error fetching events:', err);
-      }
-    };
 
     fetchEvents();
+
+    const interval = setInterval(fetchEvents, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSearch = async (query) => {
