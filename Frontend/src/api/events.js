@@ -97,9 +97,12 @@ export async function editMyEvent(eventId, updatedEvent) {
 export async function createReport(eventId, reportData) {
     const res = await fetch(`${API}/${eventId}/report`, {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
+        headers: {
+            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`,
+            "Content-Type":"application/json"
+        },
         credentials: "include",
-        body: JSON.stringify(reportData),
+        body: JSON.stringify({reportData}),
     })
     return res.json();
 }

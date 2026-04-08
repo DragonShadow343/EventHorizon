@@ -1,4 +1,5 @@
 import Event from "../models/Event.js";
+import Report from "../models/Report.js";
 import fs from "fs";
 import path from "path";
 
@@ -244,7 +245,7 @@ export async function getTrendingEvents(req, res) {
 export async function createReport(req, res) {
     const eventId = req.params.id;
     const userId = req.user.id;
-    const { reason, description } = req.body;
+    let { reportData } = req.body;
 
     const event = await Event.findById(eventId);
 
@@ -252,21 +253,13 @@ export async function createReport(req, res) {
         return res.status(404).json({ error: "Event not found" });
     }
 
-    const newReport = {
-        id: Date.now().toString(),
+    const report = new Report ({
         eventId,
         reportedBy: userId,
-        reason,
-        description,
-        status: "open",
-        createdAt: new Date()
-    };
+        reason: reportData.reason,
+    });
 
-    // NOTE: You should ideally store reports in DB, but keeping your structure
-    if (!event.reports) event.reports = [];
-    event.reports.push(newReport);
+    await report.save();
 
-    await event.save();
-
-    res.status(201).json(newReport);
+    res.status(201).json(report);
 }

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getEventByID, deleteMyEvent, rsvpToEvent, cancelRsvp, createReview } from '../../api/events';
+import { getEventByID, deleteMyEvent, rsvpToEvent, cancelRsvp, createReview, createReport } from '../../api/events';
 import { getUserByID } from '../../api/user';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/NavBar/Navbar';
@@ -65,7 +65,7 @@ const AttendeeBar = ({attendee}) => {
   );
 }
 
-const ReviewModal = ({ onClose, eventId, onSubmitted }) => {
+const FeedbackModal = ({ onClose, eventId, onSubmitted, type }) => {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -78,12 +78,16 @@ const ReviewModal = ({ onClose, eventId, onSubmitted }) => {
 
     setLoading(true);
     try {
-      await createReview(eventId, {userName, comment, rating });
+      if (type === "review") {
+        await createReview(eventId, { userName, comment, rating });
+      } else if (type === "report") {
+        await createReport(eventId, {reason: comment})
+      }
       setComment("");
       onSubmitted && onSubmitted();
       onClose();
     } catch (err) {
-      console.error("Failed to submit review:", err);
+      console.error("Failed to submit feedback:", err);
     } finally {
       setLoading(false);
     }
@@ -99,25 +103,29 @@ const ReviewModal = ({ onClose, eventId, onSubmitted }) => {
           ✕
         </button>
 
-        <h2 className="text-xl font-semibold mb-4">Leave a Review</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {type === "review" ? "Leave a Review" : "Report Event"}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex gap-2">
-            {[1,2,3,4,5].map((star) => (
-              <button
-                type="button"
-                key={star}
-                onClick={() => setRating(star)}
-                className={`text-2xl ${star <= rating ? "text-yellow-400" : "text-gray-300"}`}
-              >
-                ★
-              </button>
-            ))}
-          </div>
+          {type === "review" && (
+            <div className="flex gap-2">
+              {[1,2,3,4,5].map((star) => (
+                <button
+                  type="button"
+                  key={star}
+                  onClick={() => setRating(star)}
+                  className={`text-2xl ${star <= rating ? "text-yellow-400" : "text-gray-300"}`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+          )}
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Write your review..."
+            placeholder={type === "review" ? "Write your review..." : "Describe the issue..."}
             className="w-full border rounded p-3 h-48 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
 
@@ -126,7 +134,9 @@ const ReviewModal = ({ onClose, eventId, onSubmitted }) => {
             disabled={loading}
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded"
           >
-            {loading ? "Submitting..." : "Submit Review"}
+            {loading
+              ? (type === "review" ? "Submitting..." : "Reporting...")
+              : (type === "review" ? "Submit Review" : "Submit Report")}
           </button>
         </form>
       </div>
@@ -146,6 +156,7 @@ const EventPage = () => {
   const [eventPassed, setEventPassed] = useState(true);
   const [showAttendees, setShowAttendees] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const [hasReviewed, setHasReviewed] = useState(false);
 
   useEffect(() => {
@@ -234,7 +245,11 @@ const EventPage = () => {
   }
 
   const handleReport = async () => {
-    console.log("Report button clicked");
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    setShowReport(true);
   }
 
   const handleYellowButton = async () => {
@@ -369,8 +384,9 @@ const EventPage = () => {
         />
       )}
       {showReview && user && !isOwner && (
-        <ReviewModal
+        <FeedbackModal
           eventId={id}
+          type="review"
           onClose={() => setShowReview(false)}
           onSubmitted={async () => {
             const updated = await getEventByID(id);
@@ -379,6 +395,16 @@ const EventPage = () => {
               const reviewed = updated.reviews.some(r => r.userId?.toString() === user.id);
               setHasReviewed(reviewed);
             }
+          }}
+        />
+      )}
+      {showReport && user && !isOwner && (
+        <FeedbackModal
+          eventId={id}
+          type="report"
+          onClose={() => setShowReport(false)}
+          onSubmitted={async () => {
+            setShowReport(false);
           }}
         />
       )}
