@@ -28,7 +28,7 @@ const AdminActiveUsers = () => {
       {/* Main Content */}
       <main className="mx-auto max-w-5xl px-6 py-10 lg:px-10">
         <div className="mb-8">
-          <h2 className="text-4xl font-medium tracking-tight">Active Users</h2>
+          <h2 className="text-3xl font-medium tracking-tight sm:text-4xl">Active Users</h2>
           <p className="mt-2 text-sm text-black/55">
             View and manage currently active users on the platform.
           </p>

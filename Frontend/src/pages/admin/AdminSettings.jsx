@@ -10,7 +10,7 @@ const AdminSettings = () => {
       {/* Main Content */}
       <main className="mx-auto max-w-6xl px-6 py-10 lg:px-10">
         <div className="rounded-[32px] border border-black/10 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
-          <h2 className="mb-8 text-4xl font-medium tracking-tight">
+          <h2 className="mb-8 text-3xl font-medium tracking-tight sm:text-4xl">
             Edit Profile
           </h2>
 

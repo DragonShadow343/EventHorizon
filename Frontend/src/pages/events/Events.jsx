@@ -47,10 +47,10 @@ const Events = () => {
   return (
     <>
       <Navbar />
-      <div className="grid grid-cols-[240px_1fr] grid-rows-[60px_1fr] gap-8 m-10 mb-0 mt-12">
-        <FilterBar className={'row-span-2'} />
-        <SearchBar className={'mx-1'} onSearch={handleSearch} />
-        <div className="flex-col max-h-[calc(100vh-220px)] overflow-scroll space-y-6 pb-18 px-1">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[240px_1fr] lg:gap-8 lg:px-12 lg:py-10">
+        <FilterBar className={'lg:row-span-2'} />
+        <SearchBar className={'w-full'} onSearch={handleSearch} />
+        <div className="flex-col space-y-6 overflow-auto pb-10">
           {(events.length > 0) ? (events.map((event) => (
             <EventCard2
               key={event._id}

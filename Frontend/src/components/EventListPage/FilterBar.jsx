@@ -1,7 +1,7 @@
 const FilterBar = ({ className }) => {
     return (
         <>
-            <div className={`flex flex-col shadow-xl w-60 h-fit p-6 items-start bg-blue-200 text-black rounded-2xl ${className}`}>
+            <div className={`flex w-full flex-col items-start rounded-2xl bg-blue-200 p-6 text-black shadow-xl lg:w-60 ${className}`}>
                 <h1 className={`text-2xl font-semibold`}>Filters</h1>
                 <form className={'flex flex-col gap-4 mt-4'}>
                     {/* Date filter options */}

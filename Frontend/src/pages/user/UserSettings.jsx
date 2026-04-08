@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/NavBar/Navbar";
 import { useAuth } from "./../../context/AuthContext";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../../api/auth";
 
 const UserSettings = () => {
@@ -86,12 +86,12 @@ const UserSettings = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <main className="max-w-3xl mx-auto p-6">
-        <h2 className="text-2xl font-semibold mb-6">Settings</h2>
+      <main className="mx-auto max-w-3xl p-4 sm:p-6">
+        <h2 className="mb-6 text-2xl font-semibold">Settings</h2>
 
-        <div className="bg-white shadow rounded-xl p-6 space-y-6">
+        <div className="space-y-6 rounded-xl bg-white p-4 shadow sm:p-6">
           {/* Profile Picture */}
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
             <img
               src={profilePicSrc}
               alt="Profile"

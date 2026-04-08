@@ -83,13 +83,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)]">
+    <div className="flex h-screen flex-col lg:flex-row">
       {/* LEFT SIDE */}
-      <div className="h-full relative flex-1 flex flex-col justify-center p-12">
-        <NavLink to="/" className="absolute top-10 left-10">← Back</NavLink>
-        <h1 className='text-3xl mb-5 text-center'>Sign Up</h1>
+      <div className="order-1 flex flex-1 flex-col px-4 py-8 sm:px-8 lg:order-2 lg:p-12">
+        <NavLink to="/" className="mb-6 text-sm sm:mb-0 sm:absolute sm:left-8 sm:top-8 lg:left-10 lg:top-10">
+          ← Back
+        </NavLink>
+        <h1 className="mb-5 text-center text-2xl sm:text-3xl">Sign Up</h1>
 
-        <form onSubmit={handleSubmit} className='flex flex-col gap-4 w-96 mx-auto my-10'>
+        <form onSubmit={handleSubmit} className="mx-auto my-6 flex w-full max-w-md flex-col gap-4 sm:my-10">
           <input
             type="text"
             placeholder="Name"
@@ -141,7 +143,7 @@ const Signup = () => {
             </div>
           )}
 
-          <button type="submit" className='p-3 mx-10 mt-6 cursor-pointer rounded-lg bg-blue-400 hover:bg-blue-500 duration-150 text-white'>
+          <button type="submit" className='mt-6 w-full cursor-pointer rounded-lg bg-blue-400 p-3 text-white duration-150 hover:bg-blue-500 sm:w-auto sm:self-center sm:px-10'>
             Sign Up
           </button>
         </form>
@@ -153,8 +155,8 @@ const Signup = () => {
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="flex-1 p-10">
-        <div className='w-full h-full bg-blue-400 rounded-3xl'></div>
+      <div className="order-2 flex flex-1 lg:h-full shrink-0 p-4 sm:h-48 lg:order-1 lg:self-stretch lg:p-10">
+        <div className="h-full w-full rounded-2xl bg-blue-400 lg:rounded-3xl" />
       </div>
     </div>
   );
