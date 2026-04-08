@@ -45,6 +45,7 @@ export function AuthContextProvider({ children }) {
         setIsAuthenticated(false);
         setUser(null);
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
     }
 
     return (
