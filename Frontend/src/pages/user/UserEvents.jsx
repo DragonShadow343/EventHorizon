@@ -19,29 +19,33 @@ const UserFullEventsPage = () => {
   const [pastRsvps, setPastRsvps] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchAllEvents = async () => {
+    try {
+      const [events, rsvps, pastEv, pastRv] = await Promise.all([
+        getMyEvents(),
+        getMyRsvps(),
+        getMyPastEvents(),
+        getMyPastRsvps(),
+      ]);
+
+      setMyEvents(events);
+      setMyRsvps(rsvps);
+      setPastEvents(pastEv);
+      setPastRsvps(pastRv);
+
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching events:", err);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAllEvents = async () => {
-      try {
-        const [events, rsvps, pastEv, pastRv] = await Promise.all([
-          getMyEvents(),
-          getMyRsvps(),
-          getMyPastEvents(),
-          getMyPastRsvps(),
-        ]);
-
-        setMyEvents(events);
-        setMyRsvps(rsvps);
-        setPastEvents(pastEv);
-        setPastRsvps(pastRv);
-
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching events:", err);
-        setLoading(false);
-      }
-    };
-
+    
     if (user?.id) fetchAllEvents();
+    const interval = setInterval(fetchAllEvents, 3000);
+    return () => clearInterval(interval);
+
   }, [user]);
 
   const tabs = [
