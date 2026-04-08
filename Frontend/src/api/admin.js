@@ -13,10 +13,9 @@ async function handleResponse(res) {
   return res.json();
 }
 
-export async function getAllUsers() {
+export async function getAllUsers(search = "") {
   const token = sessionStorage.getItem("accessToken");
-  
-  const res = await fetch(`${API}/users`, {
+  const res = await fetch(`${API}/users?search=${search}`, {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include"
   });

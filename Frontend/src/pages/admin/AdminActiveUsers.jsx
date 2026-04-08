@@ -7,6 +7,17 @@ import Navbar from "../../components/NavBar/Navbar";
 const AdminActiveUsers = () => {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
+  const handleSearch = async () => {
+    try {
+      const data = await getAllUsers(search);
+      setUsers(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -47,6 +58,23 @@ const AdminActiveUsers = () => {
           {/* Mobile Header */}
           <div className="mb-4 rounded-2xl bg-[#F3F4F6] px-5 py-4 sm:hidden">
             <p className="text-lg font-semibold">Active User List</p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-6 flex items-center gap-3">
+            <input
+              type="text"
+              placeholder="Search by name or email"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-xl border px-4 py-2"
+            />
+            <button
+              onClick={handleSearch}
+              className="rounded-xl bg-[#5A9BEF] px-4 py-2 text-white font-semibold"
+            >
+              Search
+            </button>
           </div>
 
           {/* User Rows */}

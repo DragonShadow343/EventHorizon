@@ -1,16 +1,22 @@
-import User from "../models/User.js"
-import Event from "../models/Event.js"
-import Report from "../models/Report.js"
+import Event from "../models/Event.js";
+import Report from "../models/Report.js";
+import User from "../models/User.js";
 
 
 export async function getAllUsers(req, res) {
   try {
-    const users = await User.find().select("-password")
+    const search = req.query.search || "";
+    const users = await User.find({
+      $or: [
+        //Allow partial matching, case-insensitive
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } }
+      ]
+    }).select("-password");
 
-    res.status(200).json(users)
-
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch users", error })
+    res.status(500).json({ message: "Failed to fetch users", error });
   }
 }
 
