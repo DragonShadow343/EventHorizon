@@ -5,6 +5,16 @@ export async function getAllEvents() {
     return res.json();
 }
 
+export async function getUpcomingEvents() {
+    const res = await fetch(`${API}/upcoming`);
+    return res.json();
+}
+
+export async function getTrendingEvents() {
+    const res = await fetch(`${API}/trending`);
+    return res.json();
+}
+
 export async function getEventByID(id) {
     const res = await fetch(`${API}/${id}`);
     return res.json();

@@ -4,9 +4,19 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import userRoutes from "./src/routes/userRoutes.js";
+import eventRoutes from "./src/routes/eventRoutes.js";
+import adminRoutes from "./src/routes/adminRoutes.js";
+
+console.log("Backend booting...");
 
 dotenv.config();
-connectDB();
+
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled promise rejection:", err);
+  process.exit(1);
+});
 
 const app = express();
 app.use(express.json());
@@ -17,10 +27,17 @@ app.use(cors({
   credentials: true
 }));
 
-app.use("/auth", (await import("./src/routes/authRoutes.js")).default);
-app.use("/users", (await import("./src/routes/userRoutes.js")).default);
-app.use("/events", (await import("./src/routes/eventRoutes.js")).default);
-app.use("/admin", (await import("./src/routes/adminRoutes.js")).default);
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
+app.use("/events", eventRoutes);
+app.use("/admin", adminRoutes);
 app.use("/uploads", express.static("./uploads"));
 
-app.listen(4000, () => console.log("Server running on port 4000"));
+const PORT = Number(process.env.PORT) || 4000;
+
+async function start() {
+  await connectDB();
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+start();
