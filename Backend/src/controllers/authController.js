@@ -2,10 +2,14 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "./../models/User.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/tokenUtils.js";
+import mongoSanitize from "mongo-sanitize";
+import mongoose from "mongoose";
 
 export async function register(req, res) {
+  const sanitizedBody = mongoSanitize(req.body);
+
   // Handle form-data fields
-  const { email, password, name } = req.body;
+  const { email, password, name } = sanitizedBody;
   const file = req.file;
 
   if (!email || !password || !name) {
@@ -39,50 +43,57 @@ export async function register(req, res) {
 }
 
 export async function login(req, res) {
-    try {
-        const {email, password} = req.body;
+  const sanitizedBody = mongoSanitize(req.body);
 
-        const user = await User.findOne({email});
-        if (!user) return res.status(401).json({error: "Invalid credentials"});
+  try {
+    const {email, password} = sanitizedBody;
 
-        const ok = await bcrypt.compare(password, user.passwordHash);
-        if (!ok) return res.status(401).json({error: "Invalid credentials"});
+    const user = await User.findOne({email});
+    if (!user) return res.status(401).json({error: "Invalid credentials"});
 
-        const accessToken = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok) return res.status(401).json({error: "Invalid credentials"});
 
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: false, // change to true for prod
-            sameSite: "lax",
-        })
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
-        res.json({
-            message: "Login successful",
-            user: {
-                id: user.id,
-                role: user.role, 
-                name: user.name,
-                email: user.email,
-            },
-            accessToken
-        });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false, // change to true for prod
+      sameSite: "lax",
+    })
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Server error" });
-    }
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user.id,
+        role: user.role, 
+        name: user.name,
+        email: user.email,
+      },
+      accessToken
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
 }
 
 export async function me(req, res) {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({error: "Missing token"});
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({error: "Missing token"});
 
-    try {
-        const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-        const user = await User.findById(payload.id).select("-passwordHash");
-        res.json(user);
-    } catch (err) {
-        res.status(401).json({error: "Invalid token"});
+  try {
+    const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+
+    if (!mongoose.Types.ObjectId.isValid(payload.id)) {
+      return res.status(400).json({ error: "Invalid user ID" });
     }
+
+    const user = await User.findById(payload.id).select("-passwordHash");
+    res.json(user);
+  } catch (err) {
+    res.status(401).json({error: "Invalid token"});
+  }
 }

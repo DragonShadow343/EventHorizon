@@ -1,8 +1,11 @@
 import User from "../models/User.js";
 import Event from "../models/Event.js";
 import bcrypt from 'bcrypt';
+import mongoSanitize from "mongo-sanitize";
+import mongoose from "mongoose";
 
 export async function updateUserData(req, res) {
+  const sanitizedBody = mongoSanitize(req.body);
   const user = await User.findById(req.user.id);
   if (!user) return res.status(404).json({ error: "User not found" });
 
@@ -10,8 +13,8 @@ export async function updateUserData(req, res) {
   console.log("FILE:", req.file);
 
   // Handle text fields
-  user.name = req.body.username ?? user.name;
-  user.email = req.body.email ?? user.email;
+  user.name = sanitizedBody.username ?? user.name;
+  user.email = sanitizedBody.email ?? user.email;
 
   // Handle image upload (Multer)
   if (req.file) {
@@ -29,10 +32,11 @@ export async function updateUserData(req, res) {
 }
 
 export async function updateUserPassword(req, res) {
+  const sanitizedBody = mongoSanitize(req.body);
   const user = await User.findById(req.user.id);
   if (!user) return res.status(404).json({ error: "User not found" });
 
-  const { oldPassword, newPassword } = req.body;
+  const { oldPassword, newPassword } = sanitizedBody;
 
   const match = await bcrypt.compare(oldPassword, user.hashedPassword);
   if (!match) return res.status(400).json({ error: "Old password incorrect" });
@@ -44,17 +48,24 @@ export async function updateUserPassword(req, res) {
 }
 
 export async function updateUserSettings(req, res) {
+  const sanitizedBody = mongoSanitize(req.body);
   const user = await User.findById(req.user.id);
   if (!user) return res.status(404).json({ error: "User not found" });
 
-  user.settings = { ...user.settings, ...req.body };
+  user.settings = { ...user.settings, ...sanitizedBody };
   await user.save();
 
   res.json(user.settings);
 }
 
 export async function getUserByID(req, res) {
-  const { id } = req.params;
+  const sanitizedParams = mongoSanitize(req.params);
+
+  const { id } = sanitizedParams;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid ID" });
+  }
+
   const user = await User.findById(id);
   if (!user) return res.status(404).json({ error: "User not found" });
 

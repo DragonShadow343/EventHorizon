@@ -9,7 +9,6 @@ import userRoutes from "./src/routes/userRoutes.js";
 import eventRoutes from "./src/routes/eventRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
 import commentRoutes from "./src/routes/commentRoutes.js";
-
 console.log("Backend booting...");
 
 dotenv.config();
