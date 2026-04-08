@@ -4,6 +4,7 @@ import { getEventByID, deleteMyEvent, rsvpToEvent, cancelRsvp, createReview, cre
 import { getUserByID } from '../../api/user';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/NavBar/Navbar';
+import Discussion from '../../components/Discussion';
 
 const AttendeeList = ({ attendees, onClose, capacity }) => {
   return (
@@ -271,7 +272,7 @@ const EventPage = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-6xl mx-auto mt-10 space-y-6">
+      <div className="max-w-6xl mx-auto my-10 space-y-6">
         {/* Banner with Title Overlay */}
         <div className="relative w-full h-88 rounded-lg overflow-hidden">
           <img
@@ -315,6 +316,13 @@ const EventPage = () => {
                 <p className="text-gray-500">No reviews yet</p>
               )}
             </div>
+
+            {/* Discussion */}
+            <Discussion 
+              eventId={event._id} 
+              user={user} 
+              token={sessionStorage.getItem("accessToken")} 
+            />
           </div>
 
           <div className="space-y-6">

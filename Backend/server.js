@@ -8,6 +8,7 @@ import authRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import eventRoutes from "./src/routes/eventRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
+import commentRoutes from "./src/routes/commentRoutes.js";
 
 console.log("Backend booting...");
 
@@ -31,6 +32,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/events", eventRoutes);
 app.use("/admin", adminRoutes);
+app.use("/comments", commentRoutes);
 app.use("/uploads", express.static("./uploads"));
 
 const PORT = Number(process.env.PORT) || 4000;
