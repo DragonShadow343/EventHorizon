@@ -18,7 +18,7 @@ export function AuthContextProvider({ children }) {
             // }
 
             setUser(res.user);
-            localStorage.setItem('accessToken', res.accessToken);
+            sessionStorage.setItem('accessToken', res.accessToken);
             setIsAuthenticated(true);
             return res.user;
         } catch (err) {
@@ -44,8 +44,8 @@ export function AuthContextProvider({ children }) {
     function logout() {
         setIsAuthenticated(false);
         setUser(null);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('accessToken');
+        sessionStorage.removeItem('refreshToken');
     }
 
     return (
