@@ -8,7 +8,6 @@ import mongoose from "mongoose";
 export async function register(req, res) {
   const sanitizedBody = mongoSanitize(req.body);
 
-  // Handle form-data fields
   const { email, password, name } = sanitizedBody;
   const file = req.file;
 
@@ -16,10 +15,23 @@ export async function register(req, res) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
+  // Email regex validation
+  const emailRegex = /^(.+)@([^\.].*)\.([a-z]{2,})$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: "Invalid email format" });
+  }
+
+  // Password regex validation (min 8 chars, 1 uppercase, 1 number, 1 symbol)
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      error: "Password must be at least 8 characters and include an uppercase letter, number, and symbol"
+    });
+  }
+
   try {
     const exists = await User.findOne({ email });
     if (exists) return res.status(409).json({ error: "Email in use" });
-
     const passwordHash = await bcrypt.hash(password, 10);
 
     const userData = {
@@ -47,6 +59,12 @@ export async function login(req, res) {
 
   try {
     const {email, password} = sanitizedBody;
+
+    // Basic email format validation (optional but recommended)
+    const emailRegex = /^(.+)@([^\.].*)\.([a-z]{2,})$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
 
     const user = await User.findOne({email});
     if (!user) return res.status(401).json({error: "Invalid credentials"});
