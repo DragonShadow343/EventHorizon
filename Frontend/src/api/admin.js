@@ -24,7 +24,7 @@ export async function getAllUsers() {
 }
 
 export async function getUser(id) {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/users/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include"
@@ -33,7 +33,7 @@ export async function getUser(id) {
 }
 
 export async function deleteUser(id) {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/users/${id}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
@@ -43,7 +43,7 @@ export async function deleteUser(id) {
 }
 
 export async function toggleUserStatus(id) {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/users/${id}/toggle-status`, {
     method: "PATCH",
     headers: { Authorization: `Bearer ${token}` },
@@ -53,7 +53,7 @@ export async function toggleUserStatus(id) {
 }
 
 export async function deleteEvent(id) {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/events/${id}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
@@ -63,16 +63,16 @@ export async function deleteEvent(id) {
 }
 
 export async function getAllReports() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/reports`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("accessToken")}` },
     credentials: "include"
   });
   return handleResponse(res);
 }
 
 export async function getReport(reportId) {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/reports/${reportId}`, {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include"
@@ -81,7 +81,7 @@ export async function getReport(reportId) {
 }
 
 export async function resolveReport(reportId) {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/reports/${reportId}/resolve`, {
     method: "PATCH",
     headers: { Authorization: `Bearer ${token}` },
@@ -91,7 +91,7 @@ export async function resolveReport(reportId) {
 }
 
 export async function deleteReport(reportId) {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/reports/${reportId}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
@@ -101,7 +101,7 @@ export async function deleteReport(reportId) {
 }
 
 export async function getTotalUsers() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/stats/users`, {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include"
@@ -110,7 +110,7 @@ export async function getTotalUsers() {
 }
 
 export async function getTotalEvents() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/stats/events`, {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include"
@@ -119,7 +119,7 @@ export async function getTotalEvents() {
 }
 
 export async function getTotalReports() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/stats/reports`, {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include"
@@ -128,7 +128,7 @@ export async function getTotalReports() {
 }
 
 export async function getMostActiveUsers() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/stats/active-users`, {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include"
@@ -137,7 +137,7 @@ export async function getMostActiveUsers() {
 }
 
 export async function getMostPopularEvents() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const res = await fetch(`${API}/stats/popular-events`, {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include"
