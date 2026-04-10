@@ -9,7 +9,7 @@ import userRoutes from "./src/routes/userRoutes.js";
 import eventRoutes from "./src/routes/eventRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
 import commentRoutes from "./src/routes/commentRoutes.js";
-import app from "./src/App.js";
+
 
 console.log("Backend booting...");
 
@@ -36,7 +36,7 @@ app.use("/admin", adminRoutes);
 app.use("/comments", commentRoutes);
 app.use("/uploads", express.static("./uploads"));
 
-const PORT = Number(process.env.PORT) || 4000;
+const PORT = Number(process.env.PORT);
 
 async function start() {
   await connectDB();
