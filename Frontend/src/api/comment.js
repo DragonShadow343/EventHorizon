@@ -1,4 +1,4 @@
-const API = "http://localhost:4000/comments";
+const API = `${import.meta.env.VITE_API_URL}/comments`;
 
 export async function fetchComments (eventId) {
     const res = await fetch(`${API}/events/${eventId}`);
