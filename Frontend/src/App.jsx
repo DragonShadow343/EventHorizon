@@ -9,7 +9,6 @@ import AdminReports from './pages/admin/AdminReports'
 import AdminReportDetails from './pages/admin/AdminReportDetails'
 import AdminActiveUsers from './pages/admin/AdminActiveUsers'
 import AdminUserDetails from './pages/admin/AdminUserDetails'
-import AdminSettings from './pages/admin/AdminSettings'
 
 import UserDashboard from './pages/user/UserDashboard'
 import UserSettings from './pages/user/UserSettings'
@@ -42,7 +41,7 @@ function App() {
             <Route path='report/:id' element={<AdminReportDetails />} />
             <Route path='user' element={<AdminActiveUsers />} />
             <Route path='user/:id' element={<AdminUserDetails />} />
-            <Route path='settings' element={<AdminSettings />} />
+            <Route path='settings' element={<UserSettings />} />
           </Route>
 
           {/* User Pages */}

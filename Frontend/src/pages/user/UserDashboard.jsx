@@ -61,24 +61,24 @@ const UserDashboard = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      <main className="my-3 mx-20">
-        <h1 className="text-3xl m-6 my-10">Hi, {user.name}</h1>
+      <main className="mx-auto my-6 max-w-6xl px-4 sm:my-8 sm:px-6 lg:px-10">
+        <h1 className="my-6 text-2xl font-semibold sm:my-10 sm:text-3xl">Hi, {user?.name}</h1>
 
         {loading ? (
           <p className="text-gray-500">Loading your events...</p>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* My Tickets */}
-              <section className="col-span-2 relative mb-8 rounded-xl bg-gray-100 p-5 shadow-sm">
+              <section className="relative col-span-1 mb-2 rounded-xl bg-gray-100 p-5 shadow-sm lg:col-span-2 lg:mb-8">
                 <h2 className="mb-4 text-lg font-semibold text-gray-700">
                   My Tickets
                 </h2>
                 {myTickets.length > 2 ? (
-                    <p className="absolute top-5 right-6 text-blue-500">More RSVPs →</p>
+                    <p className="absolute top-4 right-4 text-sm text-blue-500 sm:top-5 sm:right-6 sm:text-base">More RSVPs →</p>
                   ) : (<></>)}
                 {myTickets.length > 0 ? (
-                  <div className="grid grid-cols-2 grid-rows-1 gap-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {myTickets.slice(0,2).map(event => (
                       <UserEventCard key={`ticket-${event._id}`} event={event} onClick={() => navigate(`/events/${event._id}`)} />
                     ))}
@@ -94,7 +94,7 @@ const UserDashboard = () => {
                   My Events
                 </h2>
                 {myEvents.length > 2 ? (
-                  <p className="absolute top-5 right-6 text-blue-500">More Events →</p>
+                  <p className="absolute top-4 right-4 text-sm text-blue-500 sm:top-5 sm:right-6 sm:text-base">More Events →</p>
                 ) : (<></>)}
                 {myEvents.length > 0 ? (
                   <div className="grid grid-cols-1 grid-rows-2 gap-6">
@@ -113,12 +113,12 @@ const UserDashboard = () => {
                   Past Events
                 </h2>
                 {pastEvents.length >= 2 ? (
-                  <p className="absolute top-5 right-6 text-blue-500">More Past Events →</p>
+                  <p className="absolute top-4 right-4 text-sm text-blue-500 sm:top-5 sm:right-6 sm:text-base">More Past Events →</p>
                 ) : (<></>)}
                 {pastEvents.length > 0 ? (
                   <div className="grid grid-cols-1 grid-rows-2 gap-6">
                     {pastEvents.slice(0,2).map(event => (
-                      <UserEventCard key={`past-{event.id}`} event={event} onClick={() => navigate(`/events/${event._id}`)} />
+                      <UserEventCard key={`past-${event._id}`} event={event} onClick={() => navigate(`/events/${event._id}`)} />
                     ))}
                   </div>
                 ) : (

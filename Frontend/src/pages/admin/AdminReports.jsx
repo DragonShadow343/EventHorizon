@@ -83,22 +83,22 @@ const AdminReports = () => {
       <main className="mx-auto max-w-6xl px-6 py-10 lg:px-10">
         <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="text-4xl font-medium tracking-tight">Reports</h2>
+            <h2 className="text-3xl font-medium tracking-tight sm:text-4xl">Reports</h2>
             <p className="mt-2 text-sm text-black/55">Review, resolve, and remove moderation reports.</p>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by reason or description"
-              className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-[#5A9BEF]"
+              className="min-w-0 flex-1 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-[#5A9BEF] sm:min-w-[200px]"
             />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-[#5A9BEF]"
+              className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-[#5A9BEF] sm:w-auto sm:shrink-0"
             >
               <option value="open">Open</option>
               <option value="resolved">Resolved</option>

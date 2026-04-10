@@ -71,16 +71,16 @@ const AdminDashboard = () => {
       <Navbar />
 
       <main className="mx-auto max-w-7xl px-6 py-10 lg:px-10">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-semibold tracking-tight">Admin Dashboard</h1>
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Admin Dashboard</h1>
             <p className="mt-2 text-sm text-black/55">
               Monitor platform activity, moderation, and report resolution in one place.
             </p>
           </div>
           <Link
             to="/admin/reports"
-            className="rounded-2xl bg-[#5A9BEF] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+            className="shrink-0 rounded-2xl bg-[#5A9BEF] px-5 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
           >
             Review Reports
           </Link>

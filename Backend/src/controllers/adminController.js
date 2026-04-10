@@ -1,6 +1,8 @@
-import Event from "../models/Event.js";
-import Report from "../models/Report.js";
-import User from "../models/User.js";
+import User from "../models/User.js"
+import Event from "../models/Event.js"
+import Report from "../models/Report.js"
+import mongoSanitize from "mongo-sanitize";
+import mongoose from "mongoose";
 
 
 export async function getAllUsers(req, res) {
@@ -23,7 +25,13 @@ export async function getAllUsers(req, res) {
 
 export async function getUser(req, res) {
   try {
-    const { id } = req.params
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" })
+    }
 
     const user = await User.findById(id).select("-password")
 
@@ -41,7 +49,13 @@ export async function getUser(req, res) {
 
 export async function deleteUser(req, res) {
   try {
-    const { id } = req.params
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" })
+    }
 
     const user = await User.findByIdAndDelete(id)
 
@@ -59,7 +73,13 @@ export async function deleteUser(req, res) {
 
 export async function toggleUserStatus(req, res) {
   try {
-    const { id } = req.params
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" })
+    }
 
     const user = await User.findById(id)
 
@@ -84,7 +104,13 @@ export async function toggleUserStatus(req, res) {
 
 export async function deleteAnyEvent(req, res) {
   try {
-    const { id } = req.params
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" })
+    }
 
     const event = await Event.findByIdAndDelete(id)
 
@@ -116,7 +142,13 @@ export async function getAllReports(req, res) {
 
 export async function getReport(req, res) {
   try {
-    const { id } = req.params
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" })
+    }
 
     const report = await Report.findById(id)
       .populate("reportedBy")
@@ -136,7 +168,13 @@ export async function getReport(req, res) {
 
 export async function resolveReport(req, res) {
   try {
-    const { id } = req.params
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" })
+    }
 
     const report = await Report.findById(id)
 
@@ -158,7 +196,13 @@ export async function resolveReport(req, res) {
 
 export async function deleteReport(req, res) {
   try {
-    const { id } = req.params
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" })
+    }
 
     const report = await Report.findByIdAndDelete(id)
 
