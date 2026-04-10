@@ -1,4 +1,9 @@
-const API = "http://localhost:4000/events";
+const API = `${import.meta.env.VITE_API_URL}/events`;
+
+function getAuthHeaders() {
+  const token = sessionStorage.getItem("accessToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 export async function getAllEvents() {
     const res = await fetch(`${API}`);
@@ -29,7 +34,7 @@ export async function createEvent(eventData) {
     const res = await fetch(`${API}/`, {
         method: "POST",
         headers: {
-            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`
+            ...getAuthHeaders()
         },
         credentials: "include",
         body: eventData,
@@ -43,7 +48,7 @@ export async function submitEventReview(newReview) {
         credentials: "include",
         headers: {
             "Content-Type": "application/json",
-            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`
+            ...getAuthHeaders()
         },
         body: JSON.stringify(newReview)
     });
@@ -54,7 +59,7 @@ export async function rsvpToEvent(eventId) {
     const res = await fetch(`${API}/${eventId}/rsvp`, {
         method: "POST",
         headers: {
-            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`
+            ...getAuthHeaders()
         },
         credentials: "include",
     });
@@ -65,7 +70,7 @@ export async function cancelRsvp(eventId) {
     const res = await fetch(`${API}/${eventId}/rsvp`, {
         method: "DELETE",
         headers: {
-            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`
+            ...getAuthHeaders()
         },
         credentials: "include",
     });
@@ -76,7 +81,7 @@ export async function deleteMyEvent(eventId) {
     const res = await fetch(`${API}/${eventId}`, {
         method: "DELETE",
         headers: {
-            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`
+            ...getAuthHeaders()
         },
         credentials: "include",
     });
@@ -86,7 +91,7 @@ export async function editMyEvent(eventId, updatedEvent) {
     const res = await fetch(`${API}/${eventId}`, {
         method: "PUT",
         headers: {
-            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`
+            ...getAuthHeaders()
         },
         credentials: "include",
         body: updatedEvent,
@@ -98,7 +103,7 @@ export async function createReport(eventId, reportData) {
     const res = await fetch(`${API}/${eventId}/report`, {
         method: "POST",
         headers: {
-            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`,
+            ...getAuthHeaders(),
             "Content-Type":"application/json"
         },
         credentials: "include",
@@ -111,7 +116,7 @@ export async function createReview(eventId, reviewData) {
     const res = await fetch(`${API}/${eventId}/review`, {
         method: "POST",
         headers: {
-            Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`,
+            ...getAuthHeaders(),
             "Content-Type":"application/json",
         },
         credentials: "include",
