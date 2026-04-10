@@ -9,6 +9,7 @@ import userRoutes from "./src/routes/userRoutes.js";
 import eventRoutes from "./src/routes/eventRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
 import commentRoutes from "./src/routes/commentRoutes.js";
+import seedDatabase from "./seeds/seed.js";
 console.log("Backend booting...");
 
 dotenv.config();
@@ -38,6 +39,7 @@ const PORT = Number(process.env.PORT);
 
 async function start() {
   await connectDB();
+  await seedDatabase();
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
