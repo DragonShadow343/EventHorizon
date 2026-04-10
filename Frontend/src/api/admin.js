@@ -13,8 +13,8 @@ async function handleResponse(res) {
   return res.json();
 }
 
-export async function getAllUsers() {
-  const res = await fetch(`${API}/users`, {
+export async function getAllUsers(search = "") {
+  const res = await fetch(`${API}/users?search=${search}`, {
     headers: {...getAuthHeaders()},
     credentials: "include"
   });
