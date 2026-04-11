@@ -13,9 +13,9 @@ export function AuthContextProvider({ children }) {
         try {
             const res = await login(email, password);
 
-            // if (res.error) {
-            //     throw new Error('Network response was not ok');
-            // }
+            if (res.error) {
+                throw new Error('Network response was not ok');
+            }
 
             setUser(res.user);
             sessionStorage.setItem('accessToken', res.accessToken);
@@ -23,6 +23,7 @@ export function AuthContextProvider({ children }) {
             return res.user;
         } catch (err) {
             console.error('Login error:', err);
+            throw err;
         }
     }
 

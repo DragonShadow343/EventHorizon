@@ -69,6 +69,8 @@ export async function login(req, res) {
     const user = await User.findOne({email});
     if (!user) return res.status(401).json({error: "Invalid credentials"});
 
+    if (user.isActive == false) return res.status(403).json({error: "User forbidden"})
+
     const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) return res.status(401).json({error: "Invalid credentials"});
 

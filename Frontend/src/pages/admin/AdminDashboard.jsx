@@ -171,10 +171,10 @@ const AdminDashboard = () => {
                     <div key={event._id} className="rounded-2xl bg-[#F3F4F6] px-4 py-3">
                       <p className="font-medium">{event.title}</p>
                       <p className="mt-1 text-xs text-black/45">
-                        RSVPs: {event.rsvpCount || 0}
+                        RSVPs: {event.rsvp.length || 0}
                       </p>
                     </div>
-                  ))
+                  )).sort((a, b) => a[0] - b[0])
                 )}
               </div>
             </div>

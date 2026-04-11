@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteUser, getUser } from "../../api/admin";
+import { deleteUser, getUser, toggleUserRole, toggleUserStatus } from "../../api/admin";
 import Navbar from "../../components/NavBar/Navbar";
 
 const AdminUserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -14,12 +15,36 @@ const AdminUserDetails = () => {
     navigate("/admin/user");
   };
 
+  const handleRoleToggle = async () => {
+    try {
+      await toggleUserRole(id);
+      const updated = await getUser(id);
+      setUser(updated.user);
+      setEvents(updated.events || []);
+    } catch (err) {
+      console.error("Failed to toggle role:", err);
+    }
+  };
+
+   const handleStatusToggle = async () => {
+    try {
+      await toggleUserStatus(id);
+      const updated = await getUser(id);
+      setUser(updated.user);
+      setEvents(updated.events || []);
+    } catch (err) {
+      console.error("Failed to toggle status:", err);
+    }
+  };
+
   useEffect(() => {
     async function fetchUser() {
       try {
         setLoading(true);
         const data = await getUser(id);
-        setUser(data);
+        console.log(data);
+        setUser(data.user);
+        setEvents(data.events);
       } catch (err) {
         console.error(err);
         setUser(null);
@@ -68,33 +93,57 @@ const AdminUserDetails = () => {
           <h2 className="text-3xl font-medium tracking-tight sm:text-4xl">User Details</h2>
         </div>
 
-        <div className="rounded-[32px] border border-black/10 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
+        <div className="rounded-4xl border border-black/10 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
           <div className="grid gap-10 lg:grid-cols-[240px_1fr]">
             {/* Left Column */}
             <section className="flex flex-col items-start">
-              <div className="flex h-40 w-40 items-center justify-center rounded-[28px] border-2 border-dashed border-black/20 bg-[#EAF2FE] sm:h-52 sm:w-52">
-                <span className="text-sm font-medium text-black/55">Profile Photo</span>
+              <div className="flex h-40 w-40 items-center justify-center overflow-clip rounded-[28px] border-2 border-dashed border-black/20 bg-white sm:h-52 sm:w-52">
+                {(user.avatar)? (
+                  <img src={`${import.meta.env.VITE_API_URL}/uploads/${user.avatar}`} alt={user.name} className="object-cover" />
+                ):(
+                  <span className="text-sm font-medium text-black/55">Profile Photo</span>
+                )}
               </div>
 
               <div className="mt-6 w-full rounded-2xl border border-black/10 bg-[#F3F4F6] px-5 py-4 shadow-sm">
                 <p className="text-sm text-black/50">Name</p>
                 <p className="mt-1 text-base font-medium">{user.name}</p>
               </div>
+              <div className="mt-6 flex flex-wrap w-full space-y-2">
+                <button
+                  onClick={handleRoleToggle}
+                  className="h-10 w-full cursor-pointer rounded-full border border-black/15 bg-white hover:border-[#5A9BEF] hover:text-[#5A9BEF]"
+                  >
+                  Toggle Role
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="h-10 w-full cursor-pointer rounded-full border-2 hover:text-white border-red-500/15 bg-red-500/20 hover:border-red-500 hover:bg-red-500"
+                  >
+                  Delete User
+                </button>
+                <button
+                  onClick={handleStatusToggle}
+                  className="h-10 w-full flex items-center justify-center cursor-pointer rounded-full bg-amber-400/20 border-2 border-amber-500 hover:text-white text-sm font-medium hover:bg-amber-500"
+                >
+                  {user.isActive ? "Deactivate User" : "Activate User"}
+                </button>
+              </div>
             </section>
 
             {/* Right Column */}
             <section className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="gap-4">
                 <div className="rounded-2xl border border-black/10 bg-[#F8F8F8] px-5 py-4 shadow-sm">
                   <p className="text-sm text-black/50">Email</p>
                   <p className="mt-1 text-base font-medium">{user.email || "N/A"}</p>
                 </div>
+              </div>
 
-                <div className="rounded-2xl border border-black/10 bg-[#F8F8F8] px-5 py-4 shadow-sm">
+                {/* <div className="rounded-2xl border border-black/10 bg-[#F8F8F8] px-5 py-4 shadow-sm">
                   <p className="text-sm text-black/50">Phone</p>
                   <p className="mt-1 text-base font-medium">{user.phone || "N/A"}</p>
                 </div>
-              </div>
 
               <div className="rounded-2xl border border-black/10 bg-[#F8F8F8] px-5 py-4 shadow-sm">
                 <p className="text-sm text-black/50">School</p>
@@ -104,16 +153,41 @@ const AdminUserDetails = () => {
               <div className="rounded-2xl border border-black/10 bg-[#F8F8F8] px-5 py-4 shadow-sm">
                 <p className="text-sm text-black/50">Profession</p>
                 <p className="mt-1 text-base font-medium">{user.profession || "N/A"}</p>
+              </div> */}
+              <div className="rounded-2xl border border-black/10 bg-[#F8F8F8] px-5 py-4 shadow-sm">
+                <p className="text-sm text-black/50">Role</p>
+                <p className="mt-1 text-base font-medium capitalize">
+                  {user.role || "N/A"}
+                </p>
               </div>
+
             </section>
           </div>
         </div>
-        <button
-          onClick={handleDelete}
-          className="mt-6 ml-0 flex h-10 w-full max-w-xs items-center justify-center rounded-full border-red-600 bg-red-500 text-sm font-medium text-white shadow-2xl transition hover:bg-red-600 sm:ml-1 sm:w-32"
-        >
-          Delete User
-        </button>
+        <div className="mt-8">
+          <h3 className="text-xl font-semibold mb-4">User Events</h3>
+
+          {events.length === 0 ? (
+            <p className="text-sm text-black/55">No events created</p>
+          ) : (
+            <div className="space-y-2">
+              {events.map((event) => (
+                <div
+                  key={event._id}
+                  className="p-3 border rounded-lg flex justify-between items-center"
+                >
+                  <p>{event.title}</p>
+                  <button
+                    onClick={() => navigate(`/events/${event._id}`)}
+                    className="text-blue-500 text-sm"
+                  >
+                    View →
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
