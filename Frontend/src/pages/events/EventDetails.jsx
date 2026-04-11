@@ -285,6 +285,12 @@ const EventPage = () => {
               {event.title}
             </h1>
           </div>
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute top-5 left-5 h-14 w-14 items-center justify-center rounded-full border-2 cursor-pointer border-black/15 bg-white/75 text-sm font-medium transition hover:border-[#5A9BEF] hover:bg-white hover:text-[#5A9BEF]"
+          >
+            ←
+          </button>
         </div>
 
         {/* Two-column layout */}
