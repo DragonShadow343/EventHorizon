@@ -15,7 +15,7 @@ async function handleResponse(res) {
 
 export async function getAllUsers(search = "") {
   const res = await fetch(`${API}/users?search=${search}`, {
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -23,7 +23,7 @@ export async function getAllUsers(search = "") {
 
 export async function getUser(id) {
   const res = await fetch(`${API}/users/${id}`, {
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -32,7 +32,7 @@ export async function getUser(id) {
 export async function deleteUser(id) {
   const res = await fetch(`${API}/users/${id}`, {
     method: "DELETE",
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -41,7 +41,7 @@ export async function deleteUser(id) {
 export async function toggleUserStatus(id) {
   const res = await fetch(`${API}/users/${id}/toggle-status`, {
     method: "PATCH",
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -50,7 +50,7 @@ export async function toggleUserStatus(id) {
 export async function deleteEvent(id) {
   const res = await fetch(`${API}/events/${id}`, {
     method: "DELETE",
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -66,7 +66,7 @@ export async function getAllReports() {
 
 export async function getReport(reportId) {
   const res = await fetch(`${API}/reports/${reportId}`, {
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -75,7 +75,7 @@ export async function getReport(reportId) {
 export async function resolveReport(reportId) {
   const res = await fetch(`${API}/reports/${reportId}/resolve`, {
     method: "PATCH",
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -84,7 +84,7 @@ export async function resolveReport(reportId) {
 export async function deleteReport(reportId) {
   const res = await fetch(`${API}/reports/${reportId}`, {
     method: "DELETE",
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -92,7 +92,7 @@ export async function deleteReport(reportId) {
 
 export async function getTotalUsers() {
   const res = await fetch(`${API}/stats/users`, {
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -100,7 +100,7 @@ export async function getTotalUsers() {
 
 export async function getTotalEvents() {
   const res = await fetch(`${API}/stats/events`, {
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -108,7 +108,7 @@ export async function getTotalEvents() {
 
 export async function getTotalReports() {
   const res = await fetch(`${API}/stats/reports`, {
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -116,7 +116,7 @@ export async function getTotalReports() {
 
 export async function getMostActiveUsers() {
   const res = await fetch(`${API}/stats/active-users`, {
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);
@@ -124,7 +124,16 @@ export async function getMostActiveUsers() {
 
 export async function getMostPopularEvents() {
   const res = await fetch(`${API}/stats/popular-events`, {
-    headers: {...getAuthHeaders()},
+    headers: { ...getAuthHeaders() },
+    credentials: "include"
+  });
+  return handleResponse(res);
+}
+
+export async function toggleUserRole(id) {
+  const res = await fetch(`${API}/users/${id}/toggle-role`, {
+    method: "PATCH",
+    headers: { ...getAuthHeaders() },
     credentials: "include"
   });
   return handleResponse(res);

@@ -37,10 +37,15 @@ app.use("/uploads", express.static("./uploads"));
 
 const PORT = Number(process.env.PORT);
 
-async function start() {
+export async function startServer() {
   await connectDB();
   await seedDatabase();
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  return app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-start();
+if (process.env.NODE_ENV !== "test") {
+  console.log("Backend booting...");
+  startServer();
+}
+
+export default app;

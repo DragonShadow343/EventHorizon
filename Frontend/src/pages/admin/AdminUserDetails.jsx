@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteUser, getUser } from "../../api/admin";
+import { deleteUser, getUser, toggleUserRole } from "../../api/admin";
 import Navbar from "../../components/NavBar/Navbar";
 
 const AdminUserDetails = () => {
@@ -13,6 +13,12 @@ const AdminUserDetails = () => {
   const handleDelete = async () => {
     await deleteUser(id);
     navigate("/admin/user");
+  };
+
+  const handleRoleToggle = async () => {
+    await toggleUserRole(id);
+    const updated = await getUser(id);
+    setUser(updated);
   };
 
   useEffect(() => {
