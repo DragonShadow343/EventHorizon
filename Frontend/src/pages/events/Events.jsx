@@ -9,47 +9,42 @@ import { useNavigate } from 'react-router-dom'
 const Events = () => {
   
   const [events, setEvents] = useState([]);
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
-  const fetchEvents = async () => {
-    try {
-      const data = await getAllEvents();
-      setEvents(data);
-    } catch (err) {
-      console.error('Error fetching events:', err);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let data;
 
-    fetchEvents();
+        if (query) {
+          data = await searchEvents(query);
+        } else {
+          data = await getAllEvents();
+        }
 
-    const interval = setInterval(fetchEvents, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleSearch = async (query) => {
-    try {
-
-      if (!query) {
-        const data = await getAllEvents();
         setEvents(data);
-        return;
+      } catch (err) {
+        console.error('Error fetching events:', err);
       }
-      
-      const results = await searchEvents(query);
-      setEvents(results);
-    } catch (err) {
-      console.log('Error searching for events: ', err);
-    }
-  }
+    };
+
+    fetchData();
+
+    const interval = setInterval(fetchData, 3000);
+
+    return () => clearInterval(interval);
+  }, [query]);
+
+  const handleSearch = (q) => {
+    setQuery(q);
+  };
 
   return (
     <>
       <Navbar />
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[240px_1fr] lg:gap-8 lg:px-12 lg:py-10">
-        <FilterBar className={'lg:row-span-2'} />
-        <SearchBar className={'w-full'} onSearch={handleSearch} />
+      <div className="mx-auto max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[240px_1fr] lg:gap-8 lg:px-12 lg:py-10">
+        <SearchBar className={'w-full mb-6'} onSearch={handleSearch} />
         <div className="flex-col space-y-6 overflow-auto pb-10">
           {(events.length > 0) ? (events.map((event) => (
             <EventCard2
