@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteUser, getUser } from "../../api/admin";
+import { deleteUser, getUser, toggleUserRole } from "../../api/admin";
 import Navbar from "../../components/NavBar/Navbar";
 
 const AdminUserDetails = () => {
@@ -12,6 +12,12 @@ const AdminUserDetails = () => {
   const handleDelete = async () => {
     await deleteUser(id);
     navigate("/admin/user");
+  };
+
+  const handleRoleToggle = async () => {
+    await toggleUserRole(id);
+    const updated = await getUser(id);
+    setUser(updated);
   };
 
   useEffect(() => {
@@ -113,6 +119,12 @@ const AdminUserDetails = () => {
           className="mt-6 ml-0 flex h-10 w-full max-w-xs items-center justify-center rounded-full border-red-600 bg-red-500 text-sm font-medium text-white shadow-2xl transition hover:bg-red-600 sm:ml-1 sm:w-32"
         >
           Delete User
+        </button>
+        <button
+          onClick={handleRoleToggle}
+          className="mt-4 flex h-10 w-40 items-center justify-center rounded-full bg-blue-500 text-white text-sm font-medium hover:bg-blue-600"
+        >
+          {user.role === "admin" ? "Remove Admin" : "Make Admin"}
         </button>
       </main>
     </div>
