@@ -1,19 +1,20 @@
 import express from "express"
 import {
-  getAllUsers,
-  getUser,
-  deleteUser,
-  toggleUserStatus,
   deleteAnyEvent,
-  getAllReports,
-  getReport,
-  resolveReport,
   deleteReport,
-  getTotalUsers,
+  deleteUser,
+  getAllReports,
+  getAllUsers,
+  getMostActiveUsers,
+  getMostPopularEvents,
+  getReport,
   getTotalEvents,
   getTotalReports,
-  getMostActiveUsers,
-  getMostPopularEvents
+  getTotalUsers,
+  getUser,
+  resolveReport,
+  toggleUserRole,
+  toggleUserStatus
 } from "../controllers/adminController.js"
 
 import { authMiddleware } from "../middleware/authMiddleware.js"
@@ -27,6 +28,7 @@ router.get("/users", getAllUsers)
 router.get("/users/:id", getUser)
 router.delete("/users/:id", deleteUser)
 router.patch("/users/:id/toggle-status", toggleUserStatus)
+router.patch("/users/:id/toggle-role", toggleUserRole)
 
 router.delete("/events/:id", deleteAnyEvent)
 
