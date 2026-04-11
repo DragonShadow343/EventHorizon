@@ -124,15 +124,8 @@ const CreateEventsPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mx-20 min-h-screen px-4 py-6 sm:px-6 sm:py-8">
         <div className="mx-auto max-w-7xl">
-          {/* Back */}
-          <button
-            type="button"
-            className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black sm:mb-8"
-          >
-            ← Back
-          </button>
 
           <div className="w-full min-w-0">
             {/* Header */}

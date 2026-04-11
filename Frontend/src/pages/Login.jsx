@@ -32,6 +32,7 @@ const Login = () => {
     }
     
     if (Object.keys(newErrors).length > 0) { 
+      setErrors(newErrors);
       return;
     } else {
       const loggedInUser = await loginAs(email, password);

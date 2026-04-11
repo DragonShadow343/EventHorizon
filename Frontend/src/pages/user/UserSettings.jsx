@@ -83,11 +83,11 @@ const UserSettings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] text-black">
+    <div className="min-h-screen bg-white text-black">
       <Navbar />
 
       <main className="mx-auto max-w-6xl px-6 py-10 lg:px-10">
-        <div className="rounded-[32px] border border-black/10 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
+        <div className="rounded-4xl border border-black/10 bg-gray-50 p-6 shadow-sm sm:p-8 lg:p-10">
           <h2 className="mb-8 text-3xl font-medium tracking-tight sm:text-4xl">
             Edit Profile
           </h2>
@@ -98,7 +98,7 @@ const UserSettings = () => {
               <img
                 src={profilePicSrc}
                 alt="Profile"
-                className="h-52 w-52 rounded-[28px] object-cover border"
+                className="h-52 w-52 rounded-[28px] object-cover border bg-white"
               />
 
               <input
@@ -109,7 +109,7 @@ const UserSettings = () => {
               />
 
               {/* Username */}
-              <div className="mt-6 w-full rounded-2xl border border-black/10 bg-[#F3F4F6] px-5 py-4 shadow-sm">
+              <div className="mt-6 w-full rounded-2xl border border-black/10 bg-white px-5 py-4 shadow-sm">
                 <p className="text-sm text-black/50">Name</p>
                 {editingField === "username" ? (
                   <input
@@ -134,7 +134,7 @@ const UserSettings = () => {
             {/* Right Column */}
             <section className="space-y-4">
               {/* Email */}
-              <div className="rounded-2xl border border-black/10 bg-[#F8F8F8] px-5 py-4 shadow-sm">
+              <div className="rounded-2xl border border-black/10 bg-white px-5 py-4 shadow-sm">
                 <p className="text-sm text-black/50">Email</p>
                 {editingField === "email" ? (
                   <input
@@ -158,14 +158,14 @@ const UserSettings = () => {
               {/* Logout / Delete */}
               <div className="flex flex-col gap-4 pt-6 sm:flex-row">
                 <button
-                  className="rounded-full border-2 border-[#FF3B30] bg-[#FFF5F4] px-8 py-3 text-sm font-semibold text-[#FF3B30]"
+                  className="rounded-full border-2 cursor-pointer border-red-500 bg-red-500/10 hover:bg-red-500 px-8 py-3 text-sm font-semibold text-red-500 hover:text-white duration-150"
                 >
                   Delete Account
                 </button>
 
                 <button
                   onClick={handleLogout}
-                  className="rounded-full bg-[#E5E7EB] px-8 py-3 text-sm font-semibold text-black"
+                  className="rounded-full bg-black/10 hover:bg-black/20 cursor-pointer px-8 py-3 text-sm font-semibold text-black duration-150"
                 >
                   Logout
                 </button>

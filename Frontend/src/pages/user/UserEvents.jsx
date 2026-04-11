@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
 import Navbar from "../../components/NavBar/Navbar";
 import UserEventCard from "../../components/UserDashboard/UserEventCard";
 import { useAuth } from "../../context/AuthContext";
@@ -11,6 +12,7 @@ import {
 
 const UserFullEventsPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("myEvents"); // Default tab
   const [myEvents, setMyEvents] = useState([]);
@@ -56,7 +58,7 @@ const UserFullEventsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
       <main className="mx-auto my-8 max-w-6xl px-4 sm:my-10 sm:px-6 lg:px-8">
         <h1 className="mb-6 text-2xl font-semibold sm:text-3xl">Your Events</h1>
@@ -92,6 +94,7 @@ const UserFullEventsPage = () => {
                       <UserEventCard
                         key={`${tab.key}-${event._id}`}
                         event={event}
+                        onClick={() => navigate(`/events/${event._id}`)}
                       />
                     ))}
                   </div>
