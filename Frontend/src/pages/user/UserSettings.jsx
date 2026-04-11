@@ -40,6 +40,8 @@ const UserSettings = () => {
       ? formData.profilePic
       : undefined;
 
+  console.log("Profile pic src: ", profilePicSrc);
+
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -96,7 +98,7 @@ const UserSettings = () => {
             {/* Left Column */}
             <section className="flex flex-col items-start">
               <img
-                src={profilePicSrc}
+                src={`${import.meta.env.VITE_API_URL}/uploads/${profilePicSrc}`}
                 alt="Profile"
                 className="h-52 w-52 rounded-[28px] object-cover border bg-white"
               />
