@@ -35,13 +35,21 @@ const Login = () => {
       setErrors(newErrors);
       return;
     } else {
-      const loggedInUser = await loginAs(email, password);
-      if (loggedInUser?.role === "user") {
-        navigate("/user/dashboard");
-      } else if (loggedInUser?.role === "admin") {
-        navigate("/admin/dashboard");
-      } else{
-        newErrors.creds = "Invalid credentials";
+      try {
+        const loggedInUser = await loginAs(email, password);
+
+        if (loggedInUser.role === "user") {
+          navigate("/user/dashboard");
+        } else if (loggedInUser.role === "admin") {
+          navigate("/admin/dashboard");
+        }
+      } catch (err) {
+        console.log(err);
+        if (err.message === "User forbidden") {
+          newErrors.creds = "Your account has been deactivated";
+        } else {
+          newErrors.creds = "Invalid email or password";
+        }
       }
     }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteUser, getUser, toggleUserRole } from "../../api/admin";
+import { deleteUser, getUser, toggleUserRole, toggleUserStatus } from "../../api/admin";
 import Navbar from "../../components/NavBar/Navbar";
 
 const AdminUserDetails = () => {
@@ -23,6 +23,17 @@ const AdminUserDetails = () => {
       setEvents(updated.events || []);
     } catch (err) {
       console.error("Failed to toggle role:", err);
+    }
+  };
+
+   const handleStatusToggle = async () => {
+    try {
+      await toggleUserStatus(id);
+      const updated = await getUser(id);
+      setUser(updated.user);
+      setEvents(updated.events || []);
+    } catch (err) {
+      console.error("Failed to toggle status:", err);
     }
   };
 
@@ -98,18 +109,24 @@ const AdminUserDetails = () => {
                 <p className="text-sm text-black/50">Name</p>
                 <p className="mt-1 text-base font-medium">{user.name}</p>
               </div>
-              <div className="mt-6 flex w-full space-x-2">
+              <div className="mt-6 flex flex-wrap w-full space-y-2">
                 <button
                   onClick={handleRoleToggle}
-                  className="h-10 w-full cursor-pointer rounded-full border border-black/15 bg-white hover:border-[#5A9BEF] hover:text-[#5A9BEF] sm:w-32"
+                  className="h-10 w-full cursor-pointer rounded-full border border-black/15 bg-white hover:border-[#5A9BEF] hover:text-[#5A9BEF]"
                   >
                   Toggle Role
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="h-10 w-full cursor-pointer rounded-full border-2 hover:text-white border-red-500/15 bg-red-500/20 hover:border-red-500 hover:bg-red-500 sm:w-32"
+                  className="h-10 w-full cursor-pointer rounded-full border-2 hover:text-white border-red-500/15 bg-red-500/20 hover:border-red-500 hover:bg-red-500"
                   >
                   Delete User
+                </button>
+                <button
+                  onClick={handleStatusToggle}
+                  className="h-10 w-full flex items-center justify-center cursor-pointer rounded-full bg-amber-400/20 border-2 border-amber-500 hover:text-white text-sm font-medium hover:bg-amber-500"
+                >
+                  {user.isActive ? "Deactivate User" : "Activate User"}
                 </button>
               </div>
             </section>
