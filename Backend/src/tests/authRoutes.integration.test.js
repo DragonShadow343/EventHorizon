@@ -1,6 +1,6 @@
 import request from 'supertest';
 import bcrypt from 'bcrypt';
-import app from '../App.js';
+import app from '../../server.js';
 import User from '../models/User.js';
 import * as tokenUtils from '../utils/tokenUtils.js';
 

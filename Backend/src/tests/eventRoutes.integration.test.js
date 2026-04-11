@@ -1,6 +1,6 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import app from '../App.js';
+import app from '../../server.js';
 import Event from '../models/Event.js';
 
 jest.mock('../models/Event.js', () => ({
