@@ -1,5 +1,4 @@
 import EventCard2 from '../../components/EventListPage/EventCard2'
-import FilterBar from '../../components/EventListPage/FilterBar'
 import Navbar from '../../components/NavBar/Navbar'
 import SearchBar from '../../components/EventListPage/SearchBar'
 import { getAllEvents, searchEvents } from '../../api/events'
