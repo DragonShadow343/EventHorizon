@@ -86,9 +86,9 @@ const AdminUserDetails = () => {
           <div className="grid gap-10 lg:grid-cols-[240px_1fr]">
             {/* Left Column */}
             <section className="flex flex-col items-start">
-              <div className="flex h-40 w-40 items-center justify-center rounded-[28px] border-2 border-dashed border-black/20 bg-white sm:h-52 sm:w-52">
+              <div className="flex h-40 w-40 items-center justify-center overflow-clip rounded-[28px] border-2 border-dashed border-black/20 bg-white sm:h-52 sm:w-52">
                 {(user.avatar)? (
-                  <img src={user.avatar} alt={user.name} />
+                  <img src={`${import.meta.env.VITE_API_URL}/uploads/${user.avatar}`} alt={user.name} className="object-cover h-40" />
                 ):(
                   <span className="text-sm font-medium text-black/55">Profile Photo</span>
                 )}
