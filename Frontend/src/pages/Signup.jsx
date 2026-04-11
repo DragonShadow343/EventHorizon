@@ -68,13 +68,11 @@ const Signup = () => {
       return;
     } else {
       try {
-        const formDataSubmit = new FormData();
-        formDataSubmit.append('name', name);
-        formDataSubmit.append('email', email);
-        formDataSubmit.append('password', password);
-        if (profilePic) formDataSubmit.append('image', profilePic);
-
-        await register(formDataSubmit);
+        if (profilePic) {
+          await register(name, email, password, profilePic);
+        } else {
+          await register(name, email, password);
+        }
         navigate("/login");
       } catch (err) {
         setErrors({ email: err.message });

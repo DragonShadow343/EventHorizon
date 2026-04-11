@@ -2,6 +2,9 @@ import Comment from "../models/Comment.js";
 import mongoose from "mongoose";
 import mongoSanitize from "mongo-sanitize";
 
+function isCastError(err) {
+  return err?.name === "CastError";
+}
 
 // Create comment
 export async function createComment(req, res) {
@@ -11,12 +14,8 @@ export async function createComment(req, res) {
     const { text, parentId } = sanitizedBody;
     const { eventId } = sanitizedParams;
 
-    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+    if (!eventId) {
       return res.status(400).json({ message: "Invalid event ID" });
-    }
-
-    if (parentId && !mongoose.Types.ObjectId.isValid(parentId)) {
-      return res.status(400).json({ message: "Invalid parent ID" });
     }
 
     const comment = await Comment.create({
@@ -28,6 +27,9 @@ export async function createComment(req, res) {
 
     res.status(201).json(comment);
   } catch (err) {
+    if (isCastError(err)) {
+      return res.status(400).json({ message: "Invalid event ID" });
+    }
     res.status(500).json({ message: err.message });
   }
 };
@@ -37,7 +39,7 @@ export async function getCommentsByEvent (req, res) {
   const sanitizedParams = mongoSanitize(req.params);
   const { eventId } = sanitizedParams;
 
-  if (!mongoose.Types.ObjectId.isValid(eventId)) {
+  if (!eventId) {
     return res.status(400).json({ message: "Invalid event ID" });
   }
   try {
@@ -49,6 +51,9 @@ export async function getCommentsByEvent (req, res) {
 
     res.json(comments);
   } catch (err) {
+    if (isCastError(err)) {
+      return res.status(400).json({ message: "Invalid event ID" });
+    }
     res.status(500).json({ message: err.message });
   }
 };
@@ -58,7 +63,7 @@ export async function deleteComment(req, res){
   const sanitizedParams = mongoSanitize(req.params);
   const { commentId } = sanitizedParams;
 
-  if (!mongoose.Types.ObjectId.isValid(commentId)) {
+  if (!commentId) {
     return res.status(400).json({ message: "Invalid comment ID" });
   }
   try {
@@ -74,6 +79,9 @@ export async function deleteComment(req, res){
 
     res.json({ message: "Deleted" });
   } catch (err) {
+    if (isCastError(err)) {
+      return res.status(400).json({ message: "Invalid event ID" });
+    }
     res.status(500).json({ message: err.message });
   }
 };
