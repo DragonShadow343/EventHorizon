@@ -6,6 +6,7 @@ import Navbar from "../../components/NavBar/Navbar";
 const AdminUserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -26,6 +27,7 @@ const AdminUserDetails = () => {
         setLoading(true);
         const data = await getUser(id);
         setUser(data);
+        setEvents(data.events);
       } catch (err) {
         console.error(err);
         setUser(null);
@@ -120,12 +122,30 @@ const AdminUserDetails = () => {
         >
           Delete User
         </button>
-        <button
-          onClick={handleRoleToggle}
-          className="mt-4 flex h-10 w-40 items-center justify-center rounded-full bg-blue-500 text-white text-sm font-medium hover:bg-blue-600"
-        >
-          {user.role === "admin" ? "Remove Admin" : "Make Admin"}
-        </button>
+        <div className="mt-8">
+          <h3 className="text-xl font-semibold mb-4">User Events</h3>
+
+          {events.length === 0 ? (
+            <p className="text-sm text-black/55">No events created</p>
+          ) : (
+            <div className="space-y-2">
+              {events.map((event) => (
+                <div
+                  key={event._id}
+                  className="p-3 border rounded-lg flex justify-between items-center"
+                >
+                  <p>{event.title}</p>
+                  <button
+                    onClick={() => navigate(`/events/${event._id}`)}
+                    className="text-blue-500 text-sm"
+                  >
+                    View →
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );

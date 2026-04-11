@@ -34,6 +34,11 @@ export async function getUser(req, res) {
     }
 
     const user = await User.findById(id).select("-password")
+    
+    const events = await Event.find({ organizerId: id }).select("title _id")
+
+    res.status(200).json({ user, events })
+    return
 
     if (!user) {
       return res.status(404).json({ message: "User not found" })
