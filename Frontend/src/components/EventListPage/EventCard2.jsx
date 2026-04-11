@@ -2,7 +2,7 @@ const EventCard2 = ({ event, onClick }) => {
     return (
         <div
           onClick={onClick}
-          className="flex cursor-pointer flex-col gap-4 rounded-lg border border-gray-100 bg-gray-100 p-4 shadow sm:flex-row sm:items-stretch"
+          className="flex cursor-pointer flex-col gap-4 rounded-lg border border-gray-100 bg-gray-50 p-4 shadow sm:flex-row sm:items-stretch"
         >
             {/* image placeholder */}
             <div className="relative rounded-lg overflow-clip w-full bg-white max-h-40 sm:w-80">

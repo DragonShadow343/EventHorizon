@@ -28,7 +28,7 @@ const UserEventCard = ({ event, onClick }) => {
         </div>
       </div>
 
-      <div className="flex h-full w-full flex-col justify-between gap-3 bg-white p-4 sm:w-1/2">
+      <div className="flex h-full w-full flex-col justify-between gap-3 bg-gray-50 p-4 sm:w-1/2">
         <p className="line-clamp-4 text-sm text-gray-500">
           {event.description || "Event Description unavailable"}
         </p>
