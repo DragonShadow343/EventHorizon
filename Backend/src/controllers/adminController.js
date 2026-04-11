@@ -1,8 +1,8 @@
-import User from "../models/User.js"
-import Event from "../models/Event.js"
-import Report from "../models/Report.js"
 import mongoSanitize from "mongo-sanitize";
 import mongoose from "mongoose";
+import Event from "../models/Event.js";
+import Report from "../models/Report.js";
+import User from "../models/User.js";
 
 
 export async function getAllUsers(req, res) {
@@ -34,6 +34,11 @@ export async function getUser(req, res) {
     }
 
     const user = await User.findById(id).select("-password")
+    
+    const events = await Event.find({ organizerId: id }).select("title _id")
+
+    res.status(200).json({ user, events })
+    return
 
     if (!user) {
       return res.status(404).json({ message: "User not found" })
@@ -271,8 +276,8 @@ export async function getMostActiveUsers(req, res) {
         ...u.toObject(),
         eventsCreated: counts[u._id.toString()] || 0
       }))
-      .sort((a,b) => b.eventsCreated - a.eventsCreated)
-      .slice(0,4);
+      .sort((a, b) => b.eventsCreated - a.eventsCreated)
+      .slice(0, 4);
 
     res.status(200).json(active);
 
@@ -291,8 +296,8 @@ export async function getMostPopularEvents(req, res) {
         ...e.toObject(),
         attendeeCount: e.rsvp?.length || 0
       }))
-      .sort((a,b) => b.attendeeCount - a.attendeeCount)
-      .slice(0,4);
+      .sort((a, b) => b.attendeeCount - a.attendeeCount)
+      .slice(0, 4);
 
     res.status(200).json(popular);
 
