@@ -88,12 +88,16 @@ const AdminActiveUsers = () => {
                   <div>
                     <p className="text-lg font-semibold">{user.name}</p>
                     <p className="mt-1 text-sm text-black/55">{user.email}</p>
+                    <p className={`text-sm font-medium ${user.isActive ? "text-green-600" : "text-red-600"}`}>
+                      {user.isActive ? "Active" : "Inactive"}
+                    </p>
                   </div>
 
                   <div className="flex justify-start sm:justify-end">
                     <button
                       onClick={() => {
-                        navigate(`/admin/user/${user._id}`)}}
+                        navigate(`/admin/user/${user._id}`)
+                      }}
                       className="inline-flex items-center gap-2 rounded-xl bg-[#5A9BEF] px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90">
                       More Info
                       <span className="text-base">→</span>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteUser, getUser } from "../../api/admin";
+import { deleteUser, getUser, toggleUserStatus } from "../../api/admin";
 import Navbar from "../../components/NavBar/Navbar";
 
 const AdminUserDetails = () => {
@@ -12,6 +12,12 @@ const AdminUserDetails = () => {
   const handleDelete = async () => {
     await deleteUser(id);
     navigate("/admin/user");
+  };
+
+  const handleToggle = async () => {
+    await toggleUserStatus(id);
+    const updated = await getUser(id);
+    setUser(updated);
   };
 
   useEffect(() => {
@@ -108,12 +114,21 @@ const AdminUserDetails = () => {
             </section>
           </div>
         </div>
-        <button
-          onClick={handleDelete}
-          className="mt-6 ml-0 flex h-10 w-full max-w-xs items-center justify-center rounded-full border-red-600 bg-red-500 text-sm font-medium text-white shadow-2xl transition hover:bg-red-600 sm:ml-1 sm:w-32"
-        >
-          Delete User
-        </button>
+        <div className="flex gap-4 mt-6">
+          <button
+            onClick={handleDelete}
+            className="h-10 w-40 flex items-center justify-center rounded-full bg-red-500 text-sm font-medium text-white hover:bg-red-600"
+          >
+            Delete User
+          </button>
+
+          <button
+            onClick={handleToggle}
+            className="h-10 w-40 flex items-center justify-center rounded-full bg-yellow-500 text-white text-sm font-medium hover:bg-yellow-600"
+          >
+            {user.isActive ? "Deactivate User" : "Activate User"}
+          </button>
+        </div>
       </main>
     </div>
   );
