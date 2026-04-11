@@ -48,7 +48,8 @@ const Discussion = ({ eventId, user, token }) => {
           rows={2}
         />
         <button
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          type="button"
+          className="mt-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
           onClick={handleSubmit}
         >
           Post
@@ -59,11 +60,12 @@ const Discussion = ({ eventId, user, token }) => {
       <div className="">
         {topLevel.map((comment) => (
             <div key={comment._id} className="border-b border-b-gray-200 p-4">
-              <div className="flex justify-between items-center mb-2">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <div className="text-sm text-gray-600">
                   {comment.userId?.name || "User"}
                 </div>
                 <button
+                  type="button"
                   className="text-sm text-blue-500"
                   onClick={() => {
                     setCollapsedComments(prev => ({
@@ -76,7 +78,7 @@ const Discussion = ({ eventId, user, token }) => {
                 </button>
               </div>
 
-              <p className="mb-2">{comment.text}</p>
+              <p className="mb-2 wrap-break-word">{comment.text}</p>
 
               {!collapsedComments[comment._id] && (
                 <div className="ml-1 pl-4 space-y-2">
@@ -91,7 +93,7 @@ const Discussion = ({ eventId, user, token }) => {
                         <div className="text-sm text-gray-600">
                           {reply.userId?.name || "User"}
                         </div>
-                        <p>{reply.text}</p>
+                        <p className="wrap-break-word">{reply.text}</p>
                       </div>
                     ))}
 
@@ -114,15 +116,16 @@ const ReplyBox = ({ onReply }) => {
   const [text, setText] = useState("");
 
   return (
-    <div className="flex gap-4 mt-2">
+    <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
       <input
-        className="flex-1 border-b border-gray-200 duration-150 px-2 py-1 focus:outline-0 focus:border-b-gray-800"
+        className="min-w-0 flex-1 border-b border-gray-200 px-2 py-1 duration-150 focus:border-b-gray-800 focus:outline-none"
         placeholder="Reply..."
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
       <button
-        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+        type="button"
+        className="shrink-0 rounded bg-gray-200 px-3 py-1 hover:bg-gray-300"
         onClick={() => {
           if (!text.trim()) return;
           onReply(text);

@@ -1,10 +1,9 @@
-const API = "http://localhost:4000/auth";
+const API = `${import.meta.env.VITE_API_URL}/auth`;
 
-export async function register(name, email, password) {
+export async function register(formData) {
     const res = await fetch(`${API}/register`, {
         method: "POST",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify({name, email, password})
+        body: formData
     });
 
     const data = await res.json();

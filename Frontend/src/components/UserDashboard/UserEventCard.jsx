@@ -1,28 +1,38 @@
 const UserEventCard = ({ event, onClick }) => {
-  return (
-    <div onClick={onClick} className="relative flex rounded-xl bg-white shadow-sm overflow-clip cursor-pointer">
-      <div className="relative w-1/2 h-50">
-        {/* Image */}
-        {/* <div className="w-full h-full bg-gray-200" /> */}
-        <img src={`http://localhost:4000/uploads/${event.photos?.[0]}`} alt={event.name} className="w-full h-full" />
+  const dateLine =
+    event?.date && event?.time
+      ? `${String(event.date).split("T")[0]} • ${event.time}`
+      : event?.date
+        ? String(event.date).split("T")[0]
+        : "Event Time Unavailable";
 
-        <div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-tr from-[#364153] from-0% to-90% to-[#FFFFFF00]">
-          <div className="absolute bottom-6 left-6">
-            <p className="text-sm text-white">
-              {`${event.date.split('T')[0]} • ${event.time}` || "Event Time Unavailable"}
-            </p>
-            <h3 className="text-2xl font-semibold text-white h-fit w-fit">
+  return (
+    <div
+      onClick={onClick}
+      className="relative flex cursor-pointer flex-col overflow-clip rounded-xl bg-white shadow-sm sm:flex-row"
+    >
+      <div className="relative h-48 w-full sm:h-auto sm:min-h-50 sm:w-1/2">
+        <img
+          src={`http://localhost:4000/uploads/${event.photos?.[0]}`}
+          alt={event.title}
+          className="h-full w-full object-cover"
+        />
+
+        <div className="absolute inset-0 bg-linear-to-tr from-[#364153] from-0% to-90% to-[#FFFFFF00]">
+          <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto">
+            <p className="text-xs text-white sm:text-sm">{dateLine}</p>
+            <h3 className="mt-1 line-clamp-2 text-lg font-semibold text-white sm:text-2xl">
               {event.title || "Event Name"}
             </h3>
           </div>
         </div>
       </div>
 
-      <div className="w-1/2 h-full p-4 bg-white flex flex-col justify-between">
-        <p className="text-sm text-gray-500">
+      <div className="flex h-full w-full flex-col justify-between gap-3 bg-gray-50 p-4 sm:w-1/2">
+        <p className="line-clamp-4 text-sm text-gray-500">
           {event.description || "Event Description unavailable"}
         </p>
-        <div className="flex items-center text-blue-500 w-fit ">
+        <div className="flex w-fit items-center text-blue-500">
           <span className="text-sm font-medium">More info →</span>
         </div>
       </div>

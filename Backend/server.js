@@ -9,8 +9,7 @@ import userRoutes from "./src/routes/userRoutes.js";
 import eventRoutes from "./src/routes/eventRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
 import commentRoutes from "./src/routes/commentRoutes.js";
-
-
+import seedDatabase from "./seeds/seed.js";
 console.log("Backend booting...");
 
 dotenv.config();
@@ -25,7 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173", "http://localhost:3000"],
   credentials: true
 }));
 
@@ -36,10 +35,11 @@ app.use("/admin", adminRoutes);
 app.use("/comments", commentRoutes);
 app.use("/uploads", express.static("./uploads"));
 
-const PORT = Number(process.env.PORT) || 5000;
+const PORT = Number(process.env.PORT);
 
 export async function startServer() {
   await connectDB();
+  await seedDatabase();
   return app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 

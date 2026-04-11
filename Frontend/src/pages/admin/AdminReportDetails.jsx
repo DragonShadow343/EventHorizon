@@ -81,15 +81,16 @@ const AdminReportPage = () => {
       <Navbar />
 
       <main className="mx-auto max-w-6xl px-6 py-10 lg:px-10">
-        <div className="mb-8 flex items-center gap-4">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
           <button
+            type="button"
             onClick={() => navigate(-1)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-black/15 bg-white text-xl transition hover:border-[#5A9BEF] hover:text-[#5A9BEF]"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/15 bg-white text-xl transition hover:border-[#5A9BEF] hover:text-[#5A9BEF]"
           >
             ←
           </button>
-          <div>
-            <h2 className="text-4xl font-medium tracking-tight">Report Details</h2>
+          <div className="min-w-0">
+            <h2 className="text-3xl font-medium tracking-tight sm:text-4xl">Report Details</h2>
             {report ? <p className="mt-1 text-sm text-black/50">Created {formatDate(report.createdAt)}</p> : null}
           </div>
         </div>

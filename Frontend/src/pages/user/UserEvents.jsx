@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
 import Navbar from "../../components/NavBar/Navbar";
 import UserEventCard from "../../components/UserDashboard/UserEventCard";
 import { useAuth } from "../../context/AuthContext";
@@ -11,6 +12,7 @@ import {
 
 const UserFullEventsPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("myEvents"); // Default tab
   const [myEvents, setMyEvents] = useState([]);
@@ -56,20 +58,20 @@ const UserFullEventsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
-      <main className="mx-6 md:mx-20 my-10">
-        <h1 className="text-3xl font-semibold mb-6">Your Events</h1>
+      <main className="mx-auto my-8 max-w-6xl px-4 sm:my-10 sm:px-6 lg:px-8">
+        <h1 className="mb-6 text-2xl font-semibold sm:text-3xl">Your Events</h1>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-300 mb-6">
+        <div className="-mx-4 mb-6 flex overflow-x-auto border-b border-gray-300 px-4 sm:mx-0 sm:px-0">
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              className={`px-4 py-2 -mb-px font-medium text-gray-600 border-b-2 ${
+              className={`shrink-0 cursor-pointer border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap text-gray-600 sm:px-4 sm:text-base ${
                 activeTab === tab.key
                   ? "border-blue-500 text-blue-600"
-                  : "border-transparent hover:text-blue-600 cursor-pointer"
+                  : "border-transparent hover:text-blue-600"
               }`}
               onClick={() => setActiveTab(tab.key)}
             >
@@ -87,11 +89,12 @@ const UserFullEventsPage = () => {
               {tabs.map((tab) => {
                 if (tab.key !== activeTab) return null;
                 return tab.data.length > 0 ? (
-                  <div key={tab.key} className="space-y-4">
+                  <div key={tab.key} className="gap-4 grid grid-cols-1 sm:auto-rows-[300px] md:auto-rows-[250px] lg:grid-cols-2">
                     {tab.data.map((event) => (
                       <UserEventCard
                         key={`${tab.key}-${event._id}`}
                         event={event}
+                        onClick={() => navigate(`/events/${event._id}`)}
                       />
                     ))}
                   </div>

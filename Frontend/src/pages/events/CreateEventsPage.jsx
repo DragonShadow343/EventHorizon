@@ -124,29 +124,25 @@ const CreateEventsPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen px-6 py-8">
+      <div className="mx-20 min-h-screen px-4 py-6 sm:px-6 sm:py-8">
         <div className="mx-auto max-w-7xl">
-          {/* Back */}
-          <button className="mb-8 flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black">
-            ← Back
-          </button>
 
-          <div className="w-full">
+          <div className="w-full min-w-0">
             {/* Header */}
             <div className="mb-8">
-              <h1 className="mt-2 text-4xl font-semibold text-blue-500">
+              <h1 className="mt-2 text-2xl font-semibold text-blue-500 sm:text-4xl">
                 {isEditMode ? "Edit your event" : "Build your event page"}
               </h1>
-              <p className="mt-3 text-gray-500">
+              <p className="mt-3 text-sm text-gray-500 sm:text-base">
                 {isEditMode
                   ? "Update your event details."
                   : "Add details for your event. You can edit everything later."}
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* LEFT - Form */}
-              <div className="col-span-2 space-y-6">
+              <div className="space-y-6 lg:col-span-2">
                 {/* Image Upload */}
                 <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-100 p-6">
                   <input
@@ -196,17 +192,17 @@ const CreateEventsPage = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {/* Max Capacity */}
-                  <div className="rounded-2xl flex gap-4 items-center col-span-2 bg-gray-100 p-6">
-                    <label className="block text-lg font-semibold">Max Capacity</label>
+                  <div className="flex flex-col gap-3 rounded-2xl bg-gray-100 p-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between sm:p-6 lg:col-span-2">
+                    <label className="block text-base font-semibold sm:text-lg">Max Capacity</label>
                     <input
                       type="number"
                       min="1"
                       value={eventData.capacity}
                       onChange={(e) => setEventData({ ...eventData, capacity: e.target.value })}
                       placeholder="Enter max capacity"
-                      className=" rounded-xl border border-gray-200 bg-white text-black px-4 py-3"
+                      className="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-4 py-3 text-black"
                     />
                   </div>
 
@@ -215,13 +211,13 @@ const CreateEventsPage = () => {
                     type="date"
                     value={eventData.date}
                     onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
-                    className="rounded-xl border-2 border-gray-100 px-4 py-3"
+                    className="min-w-0 rounded-xl border-2 border-gray-100 px-4 py-3"
                   />
                   <input
                     type="time"
                     value={eventData.time}
                     onChange={(e) => setEventData({ ...eventData, time: e.target.value })}
-                    className="rounded-xl border-2 border-gray-100 px-4 py-3"
+                    className="min-w-0 rounded-xl border-2 border-gray-100 px-4 py-3"
                   />
                 </div>
 
@@ -251,7 +247,7 @@ const CreateEventsPage = () => {
               </div>
 
               {/* RIGHT - Preview */}
-              <div className="col-span-1">
+              <div className="lg:col-span-1">
                 <EventPreview data={eventData} onRemoveImage={handleRemoveImage} />
               </div>
             </div>

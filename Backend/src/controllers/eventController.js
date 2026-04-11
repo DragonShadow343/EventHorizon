@@ -2,6 +2,8 @@ import Event from "../models/Event.js";
 import Report from "../models/Report.js";
 import fs from "fs";
 import path from "path";
+import mongoSanitize from "mongo-sanitize";
+import mongoose from "mongoose";
 
 export async function getAllEvents(req, res) {
     const events = await Event.find();
@@ -9,7 +11,12 @@ export async function getAllEvents(req, res) {
 }
 
 export async function getEventById(req, res) {
-    const {id} = req.params;
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const {id} = sanitizedParams;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
     const event = await Event.findById(id);
 
     if (!event) {
@@ -20,14 +27,24 @@ export async function getEventById(req, res) {
 }
 
 export async function getEventsByOrganizer(req, res) {
-    const {id} = req.params;
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const {id} = sanitizedParams;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
     const event = await Event.find({ organizerId: id });
 
     res.json(event);
 }
 
 export async function deleteMyEvent(req, res) {
-    const { id } = req.params;
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
 
     const event = await Event.findById(id);
 
@@ -56,7 +73,13 @@ export async function deleteMyEvent(req, res) {
 
 export async function editMyEvent(req, res) {
      try {
-        const { id } = req.params;
+        const sanitizedBody = mongoSanitize(req.body);
+        const sanitizedParams = mongoSanitize(req.params);
+
+        const { id } = sanitizedParams;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: "Invalid ID" });
+        }
 
         const event = await Event.findById(id);
 
@@ -68,7 +91,7 @@ export async function editMyEvent(req, res) {
             return res.status(403).json({ error: "Not authorized to edit this event" });
         }
 
-        const { title, description, date, time, location, capacity } = req.body;
+        const { title, description, date, time, location, capacity } = sanitizedBody;
 
         if (title) event.title = title;
         if (description) event.description = description;
@@ -102,8 +125,9 @@ export async function editMyEvent(req, res) {
 
 export async function createEvent(req, res) {
   try {
+    const sanitizedBody = mongoSanitize(req.body);
     // req.body now has the text fields
-    const { title, description, date, time, location, capacity } = req.body || {};
+    const { title, description, date, time, location, capacity } = sanitizedBody || {};
 
     if (!title || !description || !date || !time || !location || !capacity) {
       return res.status(400).json({ message: 'Missing required event fields' });
@@ -131,7 +155,12 @@ export async function createEvent(req, res) {
 }
 
 export async function rsvpToEvent(req, res) {
-    const { id } = req.params;
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
 
     const event = await Event.findById(id);
 
@@ -154,7 +183,12 @@ export async function rsvpToEvent(req, res) {
 }
 
 export async function cancelRsvp(req, res) {
-    const { id } = req.params;
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id } = sanitizedParams;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
 
     const event = await Event.findById(id);
 
@@ -169,9 +203,16 @@ export async function cancelRsvp(req, res) {
 }
 
 export async function submitEventReview(req, res) {
-    const { id: eventId } = req.params;
+    const sanitizedBody = mongoSanitize(req.body);
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const { id: eventId } = sanitizedParams;
     const userId = req.user.id;
-    const {rating, comment, userName} = req.body;
+    const {rating, comment, userName} = sanitizedBody;
+
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+        return res.status(400).json({ error: "Invalid event ID" });
+    }
 
     if (!eventId) return res.status(400).json({error: "Event ID is required"});
 
@@ -215,7 +256,9 @@ export async function getUpcomingEvents(req, res) {
 }
 
 export async function searchEvents(req, res) {
-    const { q } = req.query;
+    const sanitizedQuery = mongoSanitize(req.query);
+
+    const { q } = sanitizedQuery;
 
     if (!q) {
         const events = await Event.find();
@@ -243,9 +286,16 @@ export async function getTrendingEvents(req, res) {
 }
 
 export async function createReport(req, res) {
-    const eventId = req.params.id;
+    const sanitizedBody = mongoSanitize(req.body);
+    const sanitizedParams = mongoSanitize(req.params);
+
+    const eventId = sanitizedParams.id;
     const userId = req.user.id;
-    let { reportData } = req.body;
+    let { reportData } = sanitizedBody;
+
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+        return res.status(400).json({ error: "Invalid event ID" });
+    }
 
     const event = await Event.findById(eventId);
 

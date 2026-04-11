@@ -9,7 +9,7 @@ import Discussion from '../../components/Discussion';
 const AttendeeList = ({ attendees, onClose, capacity }) => {
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-3/4 h-3/4 p-6 relative">
+      <div className="bg-white rounded-lg shadow-lg w-[92vw] max-w-3xl h-[80vh] p-4 sm:p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-2 right-4 text-3xl cursor-pointer text-gray-500 hover:text-gray-800"
@@ -20,7 +20,7 @@ const AttendeeList = ({ attendees, onClose, capacity }) => {
         <h2 className="text-xl font-semibold">Attendees <span className='text-sm ml-4 font-mono text-gray-400'>{attendees.length}/{capacity}</span></h2>
 
         {attendees && attendees.length > 0 ? (
-          <ul className="space-y-2 mt-6 overflow-y-auto h-[calc(100%-50px)] overflow-scroll">
+          <ul className="space-y-2 mt-6 overflow-y-auto h-[calc(100%-50px)]">
             {attendees.map((id, index) => (
               <AttendeeBar attendee={id} key={index} />
             ))}
@@ -59,9 +59,9 @@ const AttendeeBar = ({attendee}) => {
   }
 
   return (
-    <li className="p-3 bg-gray-100 rounded flex items-center ">
+    <li className="p-3 bg-gray-100 rounded flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
       <span className="font-semibold text-gray-800">{userData.name}</span>
-      <span className="text-sm ml-10 text-gray-500">{userData.email}</span>
+      <span className="text-sm text-gray-500 sm:text-right">{userData.email}</span>
     </li>
   );
 }
@@ -96,7 +96,7 @@ const FeedbackModal = ({ onClose, eventId, onSubmitted, type }) => {
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-3/4 max-w-2xl p-6 relative">
+      <div className="bg-white rounded-lg shadow-lg w-[92vw] max-w-2xl p-4 sm:p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-2 right-4 text-3xl cursor-pointer text-gray-500 hover:text-gray-800"
@@ -110,7 +110,7 @@ const FeedbackModal = ({ onClose, eventId, onSubmitted, type }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {type === "review" && (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {[1,2,3,4,5].map((star) => (
                 <button
                   type="button"
@@ -272,9 +272,9 @@ const EventPage = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-6xl mx-auto my-10 space-y-6">
+      <div className="mx-auto my-6 max-w-6xl space-y-6 px-4 sm:my-10 sm:px-6 lg:px-12">
         {/* Banner with Title Overlay */}
-        <div className="relative w-full h-88 rounded-lg overflow-hidden">
+        <div className="relative w-full h-64 sm:h-88 rounded-lg overflow-hidden">
           <img
             src={`http://localhost:4000/uploads/${event.photos?.[0]}`}
             alt={event.title}
@@ -285,6 +285,12 @@ const EventPage = () => {
               {event.title}
             </h1>
           </div>
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute top-5 left-5 h-14 w-14 items-center justify-center rounded-full border-2 cursor-pointer border-black/15 bg-white/75 text-sm font-medium transition hover:border-[#5A9BEF] hover:bg-white hover:text-[#5A9BEF]"
+          >
+            ←
+          </button>
         </div>
 
         {/* Two-column layout */}
@@ -331,8 +337,9 @@ const EventPage = () => {
               <p className="text-gray-600">Date: <span className="text-gray-800">{new Date(event.date).toLocaleString()}</span></p>
               <p className="text-gray-600">Location: <span className="text-gray-800">{event.location}</span></p>
 
-              <div className="grid grid-cols-2 grid-rows-2 gap-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:grid-rows-2">
                 <button
+                  type="button"
                   onClick={() => {
                     if (!user) {
                       navigate("/login");
@@ -341,7 +348,7 @@ const EventPage = () => {
                     handleBlueButton();
                   }}
                   disabled={isRSVPing}
-                  className="bg-blue-500 hover:bg-blue-600 col-span-2 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer"
+                  className="col-span-1 cursor-pointer rounded-lg bg-blue-500 px-6 py-2 font-semibold text-white shadow hover:bg-blue-600 sm:col-span-2"
                 >
                   {!user
                     ? "Login to RSVP"
@@ -354,12 +361,13 @@ const EventPage = () => {
                           : "RSVP"
                   }
                 </button>
-                <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">Share</button>
-                <button onClick={handleRedButton} className="bg-red-400 hover:bg-red-500 text-white font-semibold px-6 py-2 rounded-lg shadow cursor-pointer">{isOwner? "Delete Event" : "Report"}</button>
+                <button type="button" className="cursor-pointer rounded-lg bg-gray-200 px-6 py-2 font-semibold text-gray-800 shadow hover:bg-gray-300 sm:col-span-1">Share</button>
+                <button type="button" onClick={handleRedButton} className="cursor-pointer rounded-lg bg-red-400 px-6 py-2 font-semibold text-white shadow hover:bg-red-500 sm:col-span-1">{isOwner? "Delete Event" : "Report"}</button>
                 <button
+                  type="button"
                   onClick={handleYellowButton}
                   disabled={!isOwner && (!eventPassed || !user || hasReviewed)}
-                  className={`col-span-2 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer ${
+                  className={`col-span-1 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer sm:col-span-2 ${
                     isOwner
                       ? "bg-amber-100 hover:bg-amber-200 text-amber-500"
                       : (!eventPassed || !user || !isRSVPed)

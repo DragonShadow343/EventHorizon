@@ -1,4 +1,9 @@
-const API = "http://localhost:4000/users";
+const API = `${import.meta.env.VITE_API_URL}/users`;
+
+function getAuthHeaders() {
+  const token = sessionStorage.getItem("accessToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 // Login, register and currentUser are in api/auth.js
 
@@ -6,9 +11,7 @@ export async function updateUserData(data) {
 
     const res = await fetch(`${API}/me`, {
         method: "PUT",
-        headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-        },
+        headers: {...getAuthHeaders(),},
         credentials: "include",
         body: data,
     });
@@ -33,7 +36,7 @@ export async function getUserByID(userId) {
 export async function getMyEvents() {
     const res = await fetch(`${API}/events`, {
         credentials: "include",
-        headers: {Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`,}
+        headers: {...getAuthHeaders(),}
     })
     return res.json();
 }
@@ -41,7 +44,7 @@ export async function getMyEvents() {
 export async function getMyRsvps() {
     const res = await fetch(`${API}/rsvps`, {
         credentials: "include",
-        headers: {Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`,}
+        headers: {...getAuthHeaders(),}
     })
     return res.json();
 }
@@ -49,7 +52,7 @@ export async function getMyRsvps() {
 export async function getMyPastEvents() {
     const res = await fetch(`${API}/events/past`, {
         credentials: "include",
-        headers: {Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`,}
+        headers: {...getAuthHeaders(),}
     })
     return res.json();
 }
@@ -57,7 +60,7 @@ export async function getMyPastEvents() {
 export async function getMyPastRsvps() {
     const res = await fetch(`${API}/rsvps/past`, {
         credentials: "include",
-        headers: {Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`,}
+        headers: {...getAuthHeaders(),}
     })
     return res.json();
 }
@@ -65,7 +68,7 @@ export async function getMyPastRsvps() {
 export async function getMyReviews() {
     const res = await fetch(`${API}/reviews`, {
         credentials: "include",
-        headers: {Authorization:  `Bearer ${sessionStorage.getItem("accessToken")}`,}
+        headers: {...getAuthHeaders(),}
     })
     return res.json();
 }
