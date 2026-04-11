@@ -1,6 +1,17 @@
 const API = `${import.meta.env.VITE_API_URL}/auth`;
 
-export async function register(formData) {
+export async function register(nameOrFormData, email, password, image) {
+    const formData = nameOrFormData instanceof FormData
+        ? nameOrFormData
+        : (() => {
+            const data = new FormData();
+            data.append('name', nameOrFormData ?? '');
+            data.append('email', email ?? '');
+            data.append('password', password ?? '');
+            if (image) data.append('image', image);
+            return data;
+        })();
+
     const res = await fetch(`${API}/register`, {
         method: "POST",
         body: formData

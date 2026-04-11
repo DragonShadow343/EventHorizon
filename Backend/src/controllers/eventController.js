@@ -5,6 +5,10 @@ import path from "path";
 import mongoSanitize from "mongo-sanitize";
 import mongoose from "mongoose";
 
+function isCastError(err) {
+    return err?.name === "CastError";
+}
+
 export async function getAllEvents(req, res) {
     const events = await Event.find();
     return res.json(events);
@@ -158,11 +162,19 @@ export async function rsvpToEvent(req, res) {
     const sanitizedParams = mongoSanitize(req.params);
 
     const { id } = sanitizedParams;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!id) {
         return res.status(400).json({ error: "Invalid ID" });
     }
 
-    const event = await Event.findById(id);
+    let event;
+    try {
+        event = await Event.findById(id);
+    } catch (err) {
+        if (isCastError(err)) {
+            return res.status(400).json({ error: "Invalid ID" });
+        }
+        throw err;
+    }
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
@@ -210,13 +222,17 @@ export async function submitEventReview(req, res) {
     const userId = req.user.id;
     const {rating, comment, userName} = sanitizedBody;
 
-    if (!mongoose.Types.ObjectId.isValid(eventId)) {
-        return res.status(400).json({ error: "Invalid event ID" });
-    }
-
     if (!eventId) return res.status(400).json({error: "Event ID is required"});
 
-    const event = await Event.findById(eventId);
+    let event;
+    try {
+        event = await Event.findById(eventId);
+    } catch (err) {
+        if (isCastError(err)) {
+            return res.status(400).json({ error: "Invalid event ID" });
+        }
+        throw err;
+    }
 
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
